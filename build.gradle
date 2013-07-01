@@ -1,0 +1,64 @@
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "eclipse"
+
+project.buildDir = "gradle/build"
+
+repositories {
+    mavenCentral()
+}
+
+ext.seleniumVersion = "2.33.0"
+ext.testngVersion = "6.8.5"
+ext.phantomjsdriverVersion = "1.0.3"
+ext.log4jVersion = "1.2.17"
+
+dependencies {
+    ["selenium-java", "selenium-remote-driver", "selenium-server"].each {
+        compile "org.seleniumhq.selenium:$it:$seleniumVersion"
+        testCompile "org.seleniumhq.selenium:$it:$seleniumVersion"
+    }
+    testCompile "com.github.detro.ghostdriver:phantomjsdriver:$phantomjsdriverVersion"
+    testCompile "org.testng:testng:$testngVersion"
+}
+
+// Source code structure used by HappyTrails
+sourceSets {
+    main {
+        java {
+            srcDir "src/java"
+        }
+        resources {
+            srcDir "src/resources"
+        }
+    }
+    test {
+        java {
+            srcDir "tst/java"
+        }
+        resources {
+            srcDir "tst/resources"
+        }
+    }
+}
+
+tasks.withType(JavaExec) {
+    classpath = configurations.compile + sourceSets.test.output
+    args project.hasProperty("args") ? project.args.split("\\s") : []
+}
+
+test {
+    // TestNG specific options
+    maxParallelForks = 4
+    useTestNG()
+
+    // Listening to test execution events
+    beforeTest { descriptor ->
+        logger.lifecycle("Running " + descriptor)
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "1.6"
+    jarFile = "gradle/gradle-wrapper.jar"
+}
