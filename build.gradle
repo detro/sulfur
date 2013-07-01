@@ -12,6 +12,7 @@ ext.seleniumVersion = "2.33.0"
 ext.testngVersion = "6.8.5"
 ext.phantomjsdriverVersion = "1.0.3"
 ext.log4jVersion = "1.2.17"
+ext.gsonVersion = "2.2.4"
 
 dependencies {
     ["selenium-java", "selenium-remote-driver", "selenium-server"].each {
@@ -20,6 +21,8 @@ dependencies {
     }
     testCompile "com.github.detro.ghostdriver:phantomjsdriver:$phantomjsdriverVersion"
     testCompile "org.testng:testng:$testngVersion"
+    compile "log4j:log4j:$log4jVersion"
+    compile "com.google.code.gson:gson:$gsonVersion"
 }
 
 // Source code structure used by HappyTrails

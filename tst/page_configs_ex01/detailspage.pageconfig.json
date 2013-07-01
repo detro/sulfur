@@ -1,0 +1,8 @@
+{
+    "name"          : "detailspage",        //< non mandatory - default value is filename (without extension)
+    "components"    : [
+        "Player",
+        "BuyBox"
+    ],
+    "path"          : "/gp/product/{ASIN}"
+}

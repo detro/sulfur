@@ -1,0 +1,6 @@
+{
+    "components"    : [
+        "Player"
+    ],
+    "path"          : "/gp/video/streaming/player-solo-mode.html"
+}
