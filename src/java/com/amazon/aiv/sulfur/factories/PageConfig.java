@@ -1,5 +1,6 @@
-package com.amazon.aiv.sulfur;
+package com.amazon.aiv.sulfur.factories;
 
+import com.amazon.aiv.sulfur.factories.Consts;
 import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -11,6 +12,11 @@ import java.util.Arrays;
  *
  * @author Ivan De Marino <demarino@amazon.com>
  *
+ * #pojo
+ * #json
+ * #gson
+ * #struct
+ *
  * TODO
  */
 public class PageConfig {
@@ -21,7 +27,7 @@ public class PageConfig {
     private transient String    filename = null;
 
     public String getName() {
-        return null == name ? filename.replace(PageConfigFactory.PAGE_CONFIG_FILE_EXT, "") : name;
+        return null == name ? filename.replace(Consts.EXTENSION_PAGE_CONFIG_FILE, "") : name;
     }
 
     public void setName(String name) {
