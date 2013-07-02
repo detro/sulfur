@@ -1,6 +1,5 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.PageConfig;
 import com.amazon.aiv.sulfur.factories.exceptions.PageConfigInvalid;
 import com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationInvalid;
 import com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvided;
@@ -31,11 +30,6 @@ public class PageConfigFactory {
     /** Holds a reference to the Filename of PageConfigs that have been found */
     private Map<String, PageConfig> mPageConfigs = new HashMap <String, PageConfig>();
 
-    /** MANDATORY System Property to instruct Sulfur where to look for Page Configs files */
-    public static final String PAGE_CONFIGS_DIR_PATH    = "sulfur.page.configs";
-    /** MANDATORY Extension that Page Config files have to use */
-    public static final String PAGE_CONFIG_FILE_EXT     = ".pageconfig.json";
-
     /**
      * Factory method
      *
@@ -57,25 +51,21 @@ public class PageConfigFactory {
      * @throws PageConfigsLocationNotProvided
      */
     private PageConfigFactory() {
-
-        String pageConfigsDirPath = System.getProperties().getProperty(PAGE_CONFIGS_DIR_PATH);
-
-        // PAGE_CONFIGS_DIR_PATH must be provided, otherwise we throw an exception
-        if (null == pageConfigsDirPath) {
+        // Read path to PageConfig Files directory
+        String pageConfigsDirPath = System.getProperties().getProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+        if (null == pageConfigsDirPath) {           //< check validity
             throw new PageConfigsLocationNotProvided();
         }
 
-        // Scan the given directory for files with extension PAGE_CONFIG_FILE_EXT
+        // Scan the given directory for files with extension EXTENSION_PAGE_CONFIG_FILE
         File pageConfigsDir = new File(pageConfigsDirPath);
         File[] pageConfigsFiles = pageConfigsDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File fileDir, String fileName) {
-                return fileName.endsWith(PAGE_CONFIG_FILE_EXT);
+                return fileName.endsWith(Consts.EXTENSION_PAGE_CONFIG_FILE);
             }
         });
-
-        // PAGE_CONFIGS_DIR_PATH must point to a valid directory
-        if (null == pageConfigsFiles) {
+        if (null == pageConfigsFiles) {             //< check validity
             throw new PageConfigsLocationInvalid();
         }
 
