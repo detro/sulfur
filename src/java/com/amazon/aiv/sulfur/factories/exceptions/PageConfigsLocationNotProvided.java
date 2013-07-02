@@ -5,7 +5,7 @@ import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class PageConfigsLocationNotProvided extends Exception {
+public class PageConfigsLocationNotProvided extends RuntimeException {
 
     public PageConfigsLocationNotProvided() {
         super();
