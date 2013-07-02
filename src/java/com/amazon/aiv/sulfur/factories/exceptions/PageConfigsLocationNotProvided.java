@@ -1,5 +1,6 @@
 package com.amazon.aiv.sulfur.factories.exceptions;
 
+import com.amazon.aiv.sulfur.factories.Consts;
 import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 
 /**
@@ -14,6 +15,6 @@ public class PageConfigsLocationNotProvided extends RuntimeException {
     @Override
     public String getMessage() {
         return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
-                PageConfigFactory.PAGE_CONFIGS_DIR_PATH);
+                Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
     }
 }

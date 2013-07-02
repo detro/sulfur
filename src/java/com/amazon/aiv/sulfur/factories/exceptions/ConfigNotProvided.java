@@ -6,15 +6,15 @@ import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class PageConfigsLocationInvalid extends RuntimeException {
+public class ConfigNotProvided extends RuntimeException {
 
-    public PageConfigsLocationInvalid() {
+    public ConfigNotProvided() {
         super();
     }
 
     @Override
     public String getMessage() {
-        return String.format("NOTE: Value of System Property '%s' is invalid (non-existent/empty directory?).\n",
-                Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+        return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
+                Consts.SYSPROP_CONFIG_FILE_PATH);
     }
 }
