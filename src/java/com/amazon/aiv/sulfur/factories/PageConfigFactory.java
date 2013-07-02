@@ -83,17 +83,12 @@ public class PageConfigFactory {
         for (int i = pageConfigsFiles.length -1; i >= 0; --i) {
             LOG.debug("FOUND PageConfig file: " + pageConfigsFiles[i].getPath());
 
-            // By default, the PageConfig "name" is derived by the filename
-            String defaultPageName = pageConfigsFiles[i].getName().replace(PAGE_CONFIG_FILE_EXT, "");
-
             try {
                 FileReader fReader = new FileReader(pageConfigsFiles[i]);
                 PageConfig pc = gson.fromJson(fReader, PageConfig.class);
 
-                // Normalize PageConfig "name"
-                if (null == pc.getName()) {
-                    pc.setName(defaultPageName);
-                }
+                // Set the "filename" on the PageConfig
+                pc.setFilename(pageConfigsFiles[i].getName());
 
                 // Ask the PageConfig to log itself
                 pc.logDebug(LOG);
