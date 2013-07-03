@@ -1,7 +1,7 @@
 {
     "host"      : "demarino.desktop.amazon.com",
     "port"      : 12345,
-    "browsers"  : [
+    "drivers"   : [
         "firefox",
         "chrome"
 //        "phantomjs",

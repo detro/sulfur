@@ -18,9 +18,9 @@ import java.util.Arrays;
  * TODO
  */
 public class Config {
-    private String              host = null;
-    private int                 port = 80;
-    private String[]            browsers = null;
+    private String      host = null;
+    private int         port = 80;
+    private String[]    drivers = null;
 
     public String getHost() {
         return host;
@@ -30,13 +30,13 @@ public class Config {
         return port;
     }
 
-    public String[] getBrowsers() {
-        return browsers;
+    public String[] getDrivers() {
+        return drivers;
     }
 
     public void logDebug(Logger logger) {
         logger.debug("host: " + getHost());
         logger.debug("port: " + getPort());
-        logger.debug("browsers: " + Arrays.toString(getBrowsers()));
+        logger.debug("drivers: " + Arrays.toString(getDrivers()));
     }
 }
