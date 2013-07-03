@@ -36,7 +36,7 @@ public class PageConfigFactory {
      * @return Singleton PageConfigFactory
      * @throws PageConfigsLocationNotProvided
      */
-    public static PageConfigFactory  getInstance() {
+    public synchronized static PageConfigFactory  getInstance() {
 
         if (null == singleton) {
             singleton = new PageConfigFactory();
