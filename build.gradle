@@ -13,16 +13,20 @@ ext.testngVersion = "6.8.5"
 ext.phantomjsdriverVersion = "1.0.3"
 ext.log4jVersion = "1.2.17"
 ext.gsonVersion = "2.2.4"
+ext.guavaVersion = "14.0.1"
 
 dependencies {
-    ["selenium-java", "selenium-remote-driver", "selenium-server"].each {
-        compile "org.seleniumhq.selenium:$it:$seleniumVersion"
-        testCompile "org.seleniumhq.selenium:$it:$seleniumVersion"
-    }
-    testCompile "com.github.detro.ghostdriver:phantomjsdriver:$phantomjsdriverVersion"
-    testCompile "org.testng:testng:$testngVersion"
+    compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    compile "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
+    compile "org.seleniumhq.selenium:selenium-server:$seleniumVersion"
     compile "log4j:log4j:$log4jVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
+    compile "org.testng:testng:$testngVersion"
+    compile "com.google.guava:guava:$guavaVersion"
+    compile "com.github.detro.ghostdriver:phantomjsdriver:$phantomjsdriverVersion"
+
+    testCompile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    testCompile "org.testng:testng:$testngVersion"
 }
 
 // Source code structure used by HappyTrails
