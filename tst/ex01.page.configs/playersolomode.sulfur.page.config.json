@@ -2,5 +2,13 @@
     "components"    : [
         "Player"
     ],
-    "path"          : "/gp/video/streaming/player-solo-mode.html"
+    "path"          : "/gp/video/streaming/player-solo-mode.html/{REF}",
+    "queryParams"   : [
+        "!asin",
+        "playertype",
+        "playerversion",
+        "version",
+        "spoofip",
+        "autoplay"
+    ]
 }
