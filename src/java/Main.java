@@ -1,12 +1,8 @@
 import com.amazon.aiv.sulfur.factories.PageConfigFactory;
-
-import java.util.Properties;
+import com.amazon.aiv.sulfur.factories.PageFactory;
 
 public class Main {
     public static void main(String[] argv) throws Exception {
-        Properties sysProps = System.getProperties();
-        sysProps.list(System.out);
-
-        PageConfigFactory.getInstance();
+        PageFactory.getInstance();
     }
 }
