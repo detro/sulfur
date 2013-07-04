@@ -89,8 +89,7 @@ public class PageFactory {
     public Page createPage(String driverName,
                            String pageName,
                            Map<String, String> pathParams,
-                           Map<String, String> queryParams)
-            throws MalformedURLException {
+                           Map<String, String> queryParams) {
 
         // Validate Driver Name
         if (!getConfig().getDrivers().contains(driverName)) {
@@ -101,26 +100,30 @@ public class PageFactory {
             throw new UnavailablePageException(pageName);
         }
 
-        // Fetch required PageConfig
-        PageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
-
-        // Compose URL Path & Query to the Page
-        String urlPath = pageConfig.composeUrlPath(pathParams);
-        String urlQuery = pageConfig.composeUrlQuery(queryParams);
-
-        // Create the requested driver
-        WebDriver driver = WebDriverFactory.createDriver(driverName);
-
-        // Create the destination URL
-        String url = "";
         try {
-            url = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
-        } catch (MalformedURLException mue) {
-            LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageName), mue);
-            throw mue;
-        }
+            // Fetch required PageConfig
+            PageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
 
-        return new Page(driver, url);
+            // Compose URL Path & Query to the Page
+            String urlPath = pageConfig.composeUrlPath(pathParams);
+            String urlQuery = pageConfig.composeUrlQuery(queryParams);
+
+            // Create the requested driver
+            WebDriver driver = WebDriverFactory.createDriver(driverName);
+
+            // Create the destination URL
+            String url;
+            try {
+                url = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
+            } catch (MalformedURLException mue) {
+                LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageName), mue);
+                throw mue;
+            }
+
+            return new Page(driver, url);
+        } catch (Exception e) {
+            throw new FailedToCreatePageException(e);
+        }
     }
 
     public Set<String> getAvailablePageConfigs() {
