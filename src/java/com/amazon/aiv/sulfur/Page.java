@@ -24,9 +24,13 @@ public class Page {
         mDriver.manage().addCookie(cookie);
     }
 
-    public void load() {
+    public void open() {
         // TODO - too basic
         mDriver.get(mInitialUrl);
+    }
+
+    public void close() {
+        mDriver.quit();
     }
 
     public String getTitle() {
