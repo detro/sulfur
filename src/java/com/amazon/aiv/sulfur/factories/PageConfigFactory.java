@@ -73,7 +73,7 @@ public class PageConfigFactory {
                 return fileName.endsWith(Consts.EXTENSION_PAGE_CONFIG_FILE);
             }
         });
-        if (null == pageConfigsFiles) {             //< check validity
+        if (null == pageConfigsFiles || pageConfigsFiles.length == 0) {             //< check validity
             throw new InvalidPageConfigsLocationException();
         }
 
