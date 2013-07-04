@@ -1,8 +1,8 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.factories.exceptions.PageConfigInvalid;
-import com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationInvalid;
-import com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvided;
+import com.amazon.aiv.sulfur.factories.exceptions.InvalidPageConfigException;
+import com.amazon.aiv.sulfur.factories.exceptions.InvalidPageConfigsLocationException;
+import com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvidedException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
@@ -34,9 +34,9 @@ public class PageConfigFactory {
      * Factory method
      *
      * @return Singleton PageConfigFactory
-     * @throws PageConfigsLocationNotProvided
+     * @throws com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvidedException
      */
-    public synchronized static PageConfigFactory  getInstance() {
+    public synchronized static PageConfigFactory getInstance() {
 
         if (null == singleton) {
             singleton = new PageConfigFactory();
@@ -48,13 +48,13 @@ public class PageConfigFactory {
     /**
      * Creates a PageConfigFactory, checking the given PageConfigFactory#PAGE_CONFIGS_DIR_PATH.
      *
-     * @throws PageConfigsLocationNotProvided
+     * @throws com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvidedException
      */
     private PageConfigFactory() {
         // Read path to PageConfig Files directory
         String pageConfigsDirPath = System.getProperties().getProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
         if (null == pageConfigsDirPath) {           //< check validity
-            throw new PageConfigsLocationNotProvided();
+            throw new PageConfigsLocationNotProvidedException();
         }
 
         // Scan the given directory for files with extension EXTENSION_PAGE_CONFIG_FILE
@@ -66,7 +66,7 @@ public class PageConfigFactory {
             }
         });
         if (null == pageConfigsFiles) {             //< check validity
-            throw new PageConfigsLocationInvalid();
+            throw new InvalidPageConfigsLocationException();
         }
 
         Gson gson = new Gson();
@@ -87,7 +87,7 @@ public class PageConfigFactory {
                 mPageConfigs.put(pc.getName(), pc);
             } catch (FileNotFoundException fnfe) {
                 LOG.error("INVALID PageConfig (not found)");
-                throw new PageConfigInvalid(pageConfigsFiles[i].getPath());
+                throw new InvalidPageConfigException(pageConfigsFiles[i].getPath());
             } catch (JsonSyntaxException jse) {
                 LOG.error("INVALID PageConfig (malformed)");
                 throw jse;

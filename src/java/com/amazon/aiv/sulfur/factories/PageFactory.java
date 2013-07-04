@@ -1,13 +1,11 @@
 package com.amazon.aiv.sulfur.factories;
 
 import com.amazon.aiv.sulfur.Page;
-import com.amazon.aiv.sulfur.factories.exceptions.ConfigInvalid;
-import com.amazon.aiv.sulfur.factories.exceptions.ConfigNotProvided;
+import com.amazon.aiv.sulfur.factories.exceptions.ConfigNotProvidedConfig;
+import com.amazon.aiv.sulfur.factories.exceptions.InvalidConfigException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -35,7 +33,7 @@ public class PageFactory {
         // Read configuration file location
         String configFilePath = System.getProperty(Consts.SYSPROP_CONFIG_FILE_PATH);
         if (null == configFilePath) {
-            throw new ConfigNotProvided();
+            throw new ConfigNotProvidedConfig();
         }
 
         // Parse configuration file
@@ -46,7 +44,7 @@ public class PageFactory {
             mConfig.logDebug(LOG);
         } catch (FileNotFoundException fnfe) {
             LOG.error("INVALID Config (not found)");
-            throw new ConfigInvalid(configFilePath);
+            throw new InvalidConfigException(configFilePath);
         } catch (JsonSyntaxException jse) {
             LOG.error("INVALID Config (malformed)");
             throw jse;

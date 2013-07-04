@@ -1,6 +1,6 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.factories.exceptions.DriverNameInvalid;
+import com.amazon.aiv.sulfur.factories.exceptions.InvalidDriverNameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -32,7 +32,7 @@ public class WebDriverFactory {
             case Consts.DRIVERNAME_OPERA:
                 return createOperaDriver();
             default:
-                throw new DriverNameInvalid(driverName);
+                throw new InvalidDriverNameException(driverName);
         }
     }
 
