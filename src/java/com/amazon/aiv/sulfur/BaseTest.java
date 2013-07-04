@@ -24,11 +24,9 @@ public class BaseTest {
     @DataProvider(name = "pageProvider")
     public Object[][] provideConfiguredPages() {
         List<Object[]> pages = new ArrayList<Object[]>();
-        Set<String> configuredPageNames = mPageFactory.availablePageConfigs().keySet();
 
-        Iterator<String> i = configuredPageNames.iterator();
-        while (i.hasNext()) {
-            pages.add(new Object[]{ i.next() });
+        for (String configuredPageName : mPageFactory.getAvailablePageConfigs()) {
+            pages.add(new Object[]{ configuredPageName });
         }
 
         return pages.toArray(new Object[pages.size()][]);
@@ -43,10 +41,9 @@ public class BaseTest {
     @DataProvider(name = "driverProvider")
     public Object[][] provideConfiguredDrivers() {
         List<Object[]> drivers = new ArrayList<Object[]>();
-        String[] configuredDrivers = mPageFactory.getConfig().getDrivers();
 
-        for (int i = configuredDrivers.length -1; i >= 0; --i) {
-            drivers.add(new Object[]{ configuredDrivers[i] });
+        for (String configuredDriver : mPageFactory.getConfig().getDrivers()) {
+            drivers.add(new Object[]{ configuredDriver });
         }
 
         return drivers.toArray(new Object[drivers.size()][]);
