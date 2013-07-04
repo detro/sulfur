@@ -22,10 +22,15 @@ import java.util.Set;
  */
 public class Config {
     // JSON
+    private String                  protocol = null;
     private String                  host = null;
     private int                     port = 80;
     private LinkedHashSet<String>   drivers = null; //< makes "drivers" lookup fast
     private String                  seleniumhub = null;
+
+    public String getProtocol() {
+        return protocol;
+    }
 
     public String getHost() {
         return host;
@@ -56,6 +61,7 @@ public class Config {
     }
 
     public void logDebug(Logger logger) {
+        logger.debug("  protocol: " + getProtocol());
         logger.debug("  host: " + getHost());
         logger.debug("  port: " + getPort());
         logger.debug("  driver: " + getDrivers());
