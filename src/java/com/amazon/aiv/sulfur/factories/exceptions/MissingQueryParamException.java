@@ -11,6 +11,6 @@ public class MissingQueryParamException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("The MANDATORY Query Parameter '%s' is missing", getMessage());
+        return String.format("The MANDATORY Query Parameter '%s' is missing", super.getMessage());
     }
 }

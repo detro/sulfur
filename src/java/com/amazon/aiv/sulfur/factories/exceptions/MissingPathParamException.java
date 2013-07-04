@@ -11,6 +11,6 @@ public class MissingPathParamException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("The MANDATORY Path Parameter '%s' is missing", getMessage());
+        return String.format("The MANDATORY Path Parameter '%s' is missing", super.getMessage());
     }
 }

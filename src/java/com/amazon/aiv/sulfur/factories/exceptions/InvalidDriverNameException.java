@@ -11,6 +11,6 @@ public class InvalidDriverNameException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("Invalid Driver Name '%s'", getMessage());
+        return String.format("Invalid Driver Name '%s'", super.getMessage());
     }
 }

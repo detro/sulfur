@@ -11,6 +11,6 @@ public class UnavailablePageException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("The requested Page is not currently available '%s'", getMessage());
+        return String.format("The requested Page is not currently available '%s'", super.getMessage());
     }
 }

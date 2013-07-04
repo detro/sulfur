@@ -11,6 +11,6 @@ public class UnavailableDriverException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("The requested Driver is not currently available '%s'", getMessage());
+        return String.format("The requested Driver is not currently available '%s'", super.getMessage());
     }
 }

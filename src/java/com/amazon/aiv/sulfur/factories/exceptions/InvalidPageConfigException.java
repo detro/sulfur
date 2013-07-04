@@ -15,6 +15,6 @@ public class InvalidPageConfigException extends RuntimeException {
     public String getMessage() {
         return String.format("Malformed/Invalid Sulfur PageConfig file '%s'\n" +
                 "NOTE: Check file format at TODO.\n",
-                getMessage());
+                super.getMessage());
     }
 }
