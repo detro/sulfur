@@ -168,10 +168,12 @@ public class PageConfig {
 
         // Replace parameters in the PageConfig Path with the given value
         for (Map.Entry<String, String> pathParam : pathParams.entrySet()) {
-            resultPath.replaceFirst(String.format(PATTERN_FORMAT_PATH_PARAM, pathParam.getKey()), pathParam.getValue());
+            resultPath = resultPath.replaceFirst(
+                    String.format(PATTERN_FORMAT_PATH_PARAM, pathParam.getKey()),
+                    pathParam.getValue());
         }
         // Replace all the remaining parameter (not set with the previous loop) with an empty string
-        resultPath.replaceAll(String.format(PATTERN_FORMAT_PATH_PARAM, ""), "");
+        resultPath = resultPath.replaceAll(String.format(PATTERN_FORMAT_PATH_PARAM, "\\w+"), "");
 
         return resultPath;
     }
