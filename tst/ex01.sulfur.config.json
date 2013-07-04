@@ -1,7 +1,7 @@
 {
     "protocol"  : "http",
-    "host"      : "demarino.desktop.amazon.com",
-    "port"      : 12345,
+    "host"      : "www.amazon.com",
+    "port"      : 80,
     "drivers"   : [
         "firefox",
         "chrome"
