@@ -6,5 +6,6 @@
         "chrome"
 //        "phantomjs",
 //        "ie"
-    ]
+    ],
+    "seleniumhub" : null    //< default value is "null", equivalent to "use local webdrivers"
 }
