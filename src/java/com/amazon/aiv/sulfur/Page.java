@@ -1,5 +1,6 @@
 package com.amazon.aiv.sulfur;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
@@ -11,26 +12,33 @@ import java.util.List;
  */
 public class Page {
 
-    private WebDriver mDriver;
+    private final WebDriver mDriver;
+    private final String mInitialUrl;
 
-    public Page(WebDriver driver) {
+    public Page(WebDriver driver, String initialUrl) {
         mDriver = driver;
+        mInitialUrl = initialUrl;
     }
 
-    public load() {
-        // TODO
+    public void setCookie(Cookie cookie) {
+        mDriver.manage().addCookie(cookie);
+    }
+
+    public void load() {
+        // TODO - too basic
+        mDriver.get(mInitialUrl);
     }
 
     public String getTitle() {
-        return null;
+        return getDriver().getTitle();
     }
 
     public String getUrl() {
-        return null;
+        return getDriver().getCurrentUrl();
     }
 
     public String getSource() {
-        return null;
+        return getDriver().getPageSource();
     }
 
     public PageComponent getComponent(String componentName) {
