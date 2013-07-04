@@ -51,7 +51,7 @@ public class PageFactory {
             throw new InvalidConfigException(configFilePath);
         } catch (JsonSyntaxException jse) {
             LOG.error("INVALID Config (malformed)");
-            throw jse;
+            throw new InvalidConfigException(configFilePath, jse);
         }
 
         // Fetch a PageConfigFactory
