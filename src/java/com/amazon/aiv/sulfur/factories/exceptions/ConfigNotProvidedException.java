@@ -6,9 +6,9 @@ import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class ConfigNotProvidedConfig extends RuntimeException {
+public class ConfigNotProvidedException extends RuntimeException {
 
-    public ConfigNotProvidedConfig() {
+    public ConfigNotProvidedException() {
         super();
     }
 

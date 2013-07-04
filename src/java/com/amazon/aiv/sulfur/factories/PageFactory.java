@@ -1,7 +1,7 @@
 package com.amazon.aiv.sulfur.factories;
 
 import com.amazon.aiv.sulfur.Page;
-import com.amazon.aiv.sulfur.factories.exceptions.ConfigNotProvidedConfig;
+import com.amazon.aiv.sulfur.factories.exceptions.ConfigNotProvidedException;
 import com.amazon.aiv.sulfur.factories.exceptions.InvalidConfigException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class PageFactory {
         // Read configuration file location
         String configFilePath = System.getProperty(Consts.SYSPROP_CONFIG_FILE_PATH);
         if (null == configFilePath) {
-            throw new ConfigNotProvidedConfig();
+            throw new ConfigNotProvidedException();
         }
 
         // Parse configuration file
