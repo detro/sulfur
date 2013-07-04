@@ -14,18 +14,18 @@ import static org.testng.Assert.assertNotNull;
  */
 public class PageConfigFactoryTest extends BaseTest {
 
-    @Test(expectedExceptions = PageConfigsLocationNotProvidedException.class)
-    public void shouldFailToGrabInstanceOfPageConfigFactoryIfPathToPageConfigDirIsInvalid() {
-        PageConfigFactory.clearInstance();
-        System.clearProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
-        PageConfigFactory.getInstance();
-    }
-
     @Test
     public void shouldGrabInstanceOfPageConfigFactory() {
         PageConfigFactory.clearInstance();
         System.setProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.page.configs");
         assertNotNull(PageConfigFactory.getInstance());
+    }
+
+    @Test(expectedExceptions = PageConfigsLocationNotProvidedException.class)
+    public void shouldFailToGrabInstanceOfPageConfigFactoryIfPathToPageConfigDirIsInvalid() {
+        PageConfigFactory.clearInstance();
+        System.clearProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+        PageConfigFactory.getInstance();
     }
 
     @Test(expectedExceptions = InvalidPageConfigsLocationException.class)
