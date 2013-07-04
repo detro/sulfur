@@ -11,7 +11,9 @@ import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Ivan De Marino <demarino@amazon.com>
@@ -52,6 +54,8 @@ public class PageFactory {
 
         // Fetch a PageConfigFactory
         mPageConfigFactory = PageConfigFactory.getInstance();
+
+        LOG.debug("Available Pages: " + getAvailablePageConfigs());
     }
 
     /**
@@ -87,8 +91,8 @@ public class PageFactory {
         return null;
     }
 
-    public Map<String, PageConfig> availablePageConfigs() {
-        return mPageConfigFactory.getPageConfigs();
+    public Set<String> getAvailablePageConfigs() {
+        return mPageConfigFactory.getPageConfigs().keySet();
     }
 
     /**

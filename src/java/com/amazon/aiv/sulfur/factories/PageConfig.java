@@ -2,9 +2,10 @@ package com.amazon.aiv.sulfur.factories;
 
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,42 +25,62 @@ import java.util.regex.Pattern;
  */
 public class PageConfig {
     // JSON
-    private String              name = null;
-    private String[]            components = null;
-    private String              path = null;
-    private String[]            queryParams = null;
+    private String                  name = null;
+    private String[]                components = null;
+    private String                  path = null;
+    private LinkedHashSet<String>   queryParams = null;
 
     // Derived
-    private transient String    filename = null;
-    private transient String[]  pathParams = null;
-    private transient String[]  pathMandatoryParams = null; //< might seem redundant, but it's unlikely to be a long array
-    private transient String[]  queryMandatoryParams = null;
+    private transient String                    filename = null;
+    private transient LinkedHashSet<String>     pathParams = null;
+    private transient LinkedHashSet<String>     pathMandatoryParams = null; //< might seem redundant, but it's unlikely to be a long array
+    private transient LinkedHashSet<String>     queryMandatoryParams = null;
 
     // Patterns to extract Parameters from Path
     private static final String PATTERN_PATH_PARAM = "\\{!?(\\w+)\\}";
     private static final String PATTERN_PATH_MANDATORY_PARAM = "\\{!(\\w+)\\}";
 
-    private String[] extractPathParams(String patternStr) {
-        List<String> paramsList = new ArrayList<String>();
+    /**
+     * Extract Parameters from the Path, based on a given Pattern String.
+     * The Parameters are portion of a URL Path, surrounded by curly brackets.
+     * Example: "/example/path/{param1}/and/{param2}".
+     *
+     * @see PageConfig#PATTERN_PATH_PARAM
+     * @see PageConfig#PATTERN_PATH_MANDATORY_PARAM
+     *
+     * @param patternStr String containing the Pattern that will be used to instantiate an actual Pattern object
+     * @return A Set containing the Parameter found.
+     */
+    private LinkedHashSet<String> extractPathParams(String patternStr) {
+        LinkedHashSet<String> paramsSet = new LinkedHashSet<String>();
 
         // Extract all the Path Mandatory Parameters and store them locally
         Matcher pathMandatoryParamsMatcher = Pattern.compile(patternStr).matcher(getPath());
         while (pathMandatoryParamsMatcher.find()) {
-            paramsList.add(pathMandatoryParamsMatcher.group(1));
+            paramsSet.add(pathMandatoryParamsMatcher.group(1));
         }
-        return paramsList.toArray(new String[paramsList.size()]);
+
+        return paramsSet;
     }
 
+    /**
+     * Initializes the list of Query Mandatory Parameters.
+     * This will take care of also removing the prefix "!" in front of the Mandatory parameters.
+     */
     private void initQueryMandatoryParams() {
-        List<String> paramsList = new ArrayList<String>();
-        for (int i = queryParams.length -1; i >= 0; --i) {
-            if (queryParams[i].startsWith("!")) {
-                queryParams[i] = queryParams[i].replace("!", "");
-                paramsList.add(queryParams[i]);
+        // Fill the "queryMandatoryParams" Set
+        queryMandatoryParams = new LinkedHashSet<String>();
+        for (String queryParam : queryParams) {
+            if (queryParam.startsWith("!")) {
+                queryMandatoryParams.add(queryParam.replaceFirst("!", ""));
             }
         }
 
-        queryMandatoryParams = paramsList.toArray(new String[paramsList.size()]);
+        // Replace mandatory params in "queryParams" with the same parameter minus the "!" prefix
+        for (String queryMandatoryParam : queryMandatoryParams) {
+            queryParams.remove("!" + queryMandatoryParam);
+            queryParams.add(queryMandatoryParam);
+        }
     }
 
     public String getName() {
@@ -74,14 +95,14 @@ public class PageConfig {
         return path;
     }
 
-    public String[] getQueryParams() {
+    public Set<String> getQueryParams() {
         if (null == queryMandatoryParams) {
             initQueryMandatoryParams();
         }
         return queryParams;
     }
 
-    public String[] getQueryMandatoryParams() {
+    public Set<String> getQueryMandatoryParamsSet() {
         if (null == queryMandatoryParams) {
             initQueryMandatoryParams();
         }
@@ -96,14 +117,14 @@ public class PageConfig {
         this.filename = filename;
     }
 
-    public String[] getPathParams() {
+    public Set<String> getPathParamsSet() {
         if (null == pathParams) {
             pathParams = extractPathParams(PATTERN_PATH_PARAM);
         }
         return pathParams;
     }
 
-    public String[] getPathMandatoryParams() {
+    public Set<String> getPathMandatoryParamsSet() {
         if (null == pathMandatoryParams) {
             pathMandatoryParams = extractPathParams(PATTERN_PATH_MANDATORY_PARAM);
         }
@@ -115,9 +136,9 @@ public class PageConfig {
         logger.debug("  name: " + getName());
         logger.debug("  components: " + Arrays.toString(getComponents()));
         logger.debug("  path: " + getPath());
-        logger.debug("  pathParams: " + Arrays.toString(getPathParams()));
-        logger.debug("  pathMandatoryParams: " + Arrays.toString(getPathMandatoryParams()));
-        logger.debug("  queryParams: " + Arrays.toString(getQueryParams()));
-        logger.debug("  queryMandatoryParams: " + Arrays.toString(getQueryMandatoryParams()));
+        logger.debug("  pathParams: " + getPathParamsSet());
+        logger.debug("  pathMandatoryParams: " + getPathMandatoryParamsSet());
+        logger.debug("  queryParams: " + getQueryParams());
+        logger.debug("  queryMandatoryParams: " + getQueryMandatoryParamsSet());
     }
 }
