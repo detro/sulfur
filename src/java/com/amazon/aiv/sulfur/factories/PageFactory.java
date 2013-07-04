@@ -89,10 +89,10 @@ public class PageFactory {
      * NOTE: The returned Page hasn't loaded yet, so the User can still operate on it before the initial HTTP GET.
      *
      * @param driverName Possible values are listed in @see Consts interface
-     * @param pageName Name of the Page we want to load. It must be part of the given PageConfig(s)
+     * @param pageName Name of the Page we want to open. It must be part of the given PageConfig(s)
      * @param pathParams Map of parameters that will be set in the Page URL Path (@see PageConfig)
      * @param queryParams Map of parameters that will be set in the Page URL Query (@see PageConfig)
-     * @return A "ready to load" Page object
+     * @return A "ready to open" Page object
      */
     public Page createPage(String driverName,
                            String pageName,

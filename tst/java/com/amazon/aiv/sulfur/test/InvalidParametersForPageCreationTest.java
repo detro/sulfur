@@ -31,7 +31,7 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
                 "playersolomode",
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
-        playerSoloMode.load();
+        playerSoloMode.open();
     }
 
     @Test(dataProvider = "driverProvider", expectedExceptions = MissingPathParamException.class)
@@ -41,7 +41,7 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
                 "detailspage",
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
-        playerSoloMode.load();
+        playerSoloMode.open();
     }
 
     @Test(dataProvider = "pageProvider", expectedExceptions = UnavailableDriverException.class)
@@ -51,7 +51,7 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
                 pageName,
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
-        playerSoloMode.load();
+        playerSoloMode.open();
     }
 
     @Test(dataProvider = "driverProvider", expectedExceptions = UnavailablePageException.class)
@@ -61,6 +61,6 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
                 "nonExistentPage",
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
-        playerSoloMode.load();
+        playerSoloMode.open();
     }
 }
