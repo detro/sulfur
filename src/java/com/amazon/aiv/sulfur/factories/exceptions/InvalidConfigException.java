@@ -9,10 +9,14 @@ public class InvalidConfigException extends RuntimeException {
         super(invalidPageConfigPath);
     }
 
+    public InvalidConfigException(String invalidPageConfigPath, Throwable cause) {
+        super(invalidPageConfigPath, cause);
+    }
+
     @Override
     public String getMessage() {
         return String.format("Malformed/Invalid Sulfur Config file '%s'\n" +
                 "NOTE: Check file format at TODO.\n",
-                getMessage());
+                super.getMessage());
     }
 }
