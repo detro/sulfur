@@ -1,17 +1,19 @@
 package com.amazon.aiv.sulfur.factories.exceptions;
 
+import com.amazon.aiv.sulfur.factories.PageConfigFactory;
+
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class ConfigInvalid extends RuntimeException {
+public class InvalidPageConfigException extends RuntimeException {
 
-    public ConfigInvalid(String invalidPageConfigPath) {
+    public InvalidPageConfigException(String invalidPageConfigPath) {
         super(invalidPageConfigPath);
     }
 
     @Override
     public String getMessage() {
-        return String.format("Malformed/Invalid Sulfur Config file '%s'\n" +
+        return String.format("Malformed/Invalid Sulfur PageConfig file '%s'\n" +
                 "NOTE: Check file format at TODO.\n",
                 getMessage());
     }

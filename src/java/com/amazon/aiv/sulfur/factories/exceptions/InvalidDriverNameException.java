@@ -3,9 +3,9 @@ package com.amazon.aiv.sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class DriverNameInvalid extends RuntimeException {
+public class InvalidDriverNameException extends RuntimeException {
 
-    public DriverNameInvalid(String driverName) {
+    public InvalidDriverNameException(String driverName) {
         super(driverName);
     }
 

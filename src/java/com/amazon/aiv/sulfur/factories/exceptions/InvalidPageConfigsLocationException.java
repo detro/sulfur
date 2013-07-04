@@ -6,9 +6,9 @@ import com.amazon.aiv.sulfur.factories.PageConfigFactory;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class PageConfigsLocationInvalid extends RuntimeException {
+public class InvalidPageConfigsLocationException extends RuntimeException {
 
-    public PageConfigsLocationInvalid() {
+    public InvalidPageConfigsLocationException() {
         super();
     }
 
