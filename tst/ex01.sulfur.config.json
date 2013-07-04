@@ -1,4 +1,5 @@
 {
+    "protocol"  : "http",
     "host"      : "demarino.desktop.amazon.com",
     "port"      : 12345,
     "drivers"   : [
