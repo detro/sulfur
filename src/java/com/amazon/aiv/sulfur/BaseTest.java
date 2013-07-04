@@ -12,9 +12,6 @@ import java.util.*;
  */
 public class BaseTest {
 
-    // One factory for all the Tests, even across multiple threads
-    private static final PageFactory mPageFactory = PageFactory.getInstance();
-
     /**
      * @DataProvider of all the Pages found by the PageConfigFactory.
      * Name of the @DataProvider is "pageProvider"
@@ -23,9 +20,10 @@ public class BaseTest {
      */
     @DataProvider(name = "pageProvider")
     public Object[][] provideConfiguredPages() {
+        PageFactory pageFactory = PageFactory.getInstance();
         List<Object[]> pages = new ArrayList<Object[]>();
 
-        for (String configuredPageName : mPageFactory.getAvailablePageConfigs()) {
+        for (String configuredPageName : pageFactory.getAvailablePageConfigs()) {
             pages.add(new Object[]{ configuredPageName });
         }
 
@@ -40,9 +38,10 @@ public class BaseTest {
      */
     @DataProvider(name = "driverProvider")
     public Object[][] provideConfiguredDrivers() {
+        PageFactory pageFactory = PageFactory.getInstance();
         List<Object[]> drivers = new ArrayList<Object[]>();
 
-        for (String configuredDriver : mPageFactory.getConfig().getDrivers()) {
+        for (String configuredDriver : pageFactory.getConfig().getDrivers()) {
             drivers.add(new Object[]{ configuredDriver });
         }
 
@@ -69,15 +68,5 @@ public class BaseTest {
      */
     public Iterator<Object[]> makeCartesianProvider(List<Object[][]> providersData) {
         return DataProviderUtils.cartesianProvider(providersData);
-    }
-
-    /**
-     * The PageFactory.
-     * NOTE: There is ONE PageFactory for all the tests (synchronized)
-     *
-     * @return The PageFactory
-     */
-    protected static PageFactory getPageFactory() {
-        return mPageFactory;
     }
 }
