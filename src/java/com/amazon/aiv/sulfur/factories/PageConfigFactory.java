@@ -46,6 +46,14 @@ public class PageConfigFactory {
     }
 
     /**
+     * Utility method to get rid of the PageConfigFactory Singleton Instance.
+     * NOTE: Make sure you know what you are doing when using this.
+     */
+    public synchronized static void clearInstance() {
+        singleton = null;
+    }
+
+    /**
      * Creates a PageConfigFactory, checking the given PageConfigFactory#PAGE_CONFIGS_DIR_PATH.
      *
      * @throws com.amazon.aiv.sulfur.factories.exceptions.PageConfigsLocationNotProvidedException

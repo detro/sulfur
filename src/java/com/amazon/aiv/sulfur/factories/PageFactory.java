@@ -74,6 +74,14 @@ public class PageFactory {
     }
 
     /**
+     * Utility method to get rid of the PageFactory Singleton Instance.
+     * NOTE: Make sure you know what you are doing when using this.
+     */
+    public synchronized static void clearInstance() {
+        singleton = null;
+    }
+
+    /**
      * Creates a Page.
      * It validates the input parameters, checking if the requested driver exists, if the page exists and the
      * mandatory path and query parameters are all provided.
