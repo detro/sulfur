@@ -37,7 +37,19 @@ public class Page {
         return getDriver().getTitle();
     }
 
-    public String getUrl() {
+    /**
+     * URL used at time the Page object was constructed.
+     * @return URL used at time the Page object was constructed.
+     */
+    public String getInitialUrl() {
+        return mInitialUrl;
+    }
+
+    /**
+     * URL the Page's internal Driver is at.
+     * @return URL the Page's internal Driver is at.
+     */
+    public String getCurrentUrl() {
         return getDriver().getCurrentUrl();
     }
 
