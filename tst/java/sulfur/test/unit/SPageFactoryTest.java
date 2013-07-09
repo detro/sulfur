@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertNotNull;
 
 /**
- * @author Ivan De Marino - demarino@amazon.com
+ * @author Ivan De Marino
  */
 public class SPageFactoryTest {
 

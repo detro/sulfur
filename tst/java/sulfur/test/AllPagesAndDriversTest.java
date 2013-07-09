@@ -40,7 +40,7 @@ import java.util.Map;
 import static org.testng.Assert.assertTrue;
 
 /**
- * @author Ivan De Marino - demarino@amazon.com
+ * @author Ivan De Marino
  */
 public class AllPagesAndDriversTest extends SBaseTest {
 

@@ -42,7 +42,7 @@ import java.util.HashMap;
 /**
  * Tests to check that Invalid Parameters, provided at SPage-creation time, cause the expected failure.
  *
- * @author Ivan De Marino - demarino@amazon.com
+ * @author Ivan De Marino
  */
 public class InvalidParametersForPageCreationTest extends SBaseTest {
 

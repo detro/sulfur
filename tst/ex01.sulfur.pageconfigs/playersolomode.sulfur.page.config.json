@@ -1,6 +1,6 @@
 {
     "components"    : [
-        "Player"
+        "sulfur.test.components.Player"
     ],
     "path"          : "/gp/video/streaming/player-solo-mode.html/{ref}",
     "queryParams"   : [
