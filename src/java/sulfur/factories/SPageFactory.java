@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sulfur.factories;
 
 import sulfur.SPage;
+import sulfur.SPageComponent;
 import sulfur.factories.exceptions.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -36,6 +37,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -146,15 +148,24 @@ public class SPageFactory {
         WebDriver driver = SWebDriverFactory.createDriver(driverName);
 
         // Create the destination URL
-        String url;
+        String initialUrl;
         try {
-            url = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
+            initialUrl = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
         } catch (MalformedURLException mue) {
             LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageName), mue);
             throw new SFailedToCreatePageException(mue);
         }
 
-        return new SPage(driver, url);
+        // Create and return the new SPage
+        try {
+            return new SPage(driver, initialUrl, pageConfig.getComponentClassnames());
+        } catch (Exception e) {
+            // In case something goes wrong when creating the SPage, it's important we "quit()" the driver.
+            // We don't want Browser instances hanging around
+            LOG.fatal(String.format("EXCEPTION thrown while trying to create Page '%s'"), e);
+            driver.quit();
+            throw e;
+        }
     }
 
     public Set<String> getAvailablePageConfigs() {

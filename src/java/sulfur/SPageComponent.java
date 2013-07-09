@@ -36,11 +36,17 @@ import org.openqa.selenium.WebDriver;
  */
 public abstract class SPageComponent {
 
-    private final WebDriver mDriver;
+    private final SPage mContainingPage;
 
-    public SPageComponent(WebDriver driver) {
-        mDriver = driver;
+    public SPageComponent(SPage containingPage) {
+        mContainingPage = containingPage;
     }
+
+    protected WebDriver getDriver() {
+        return mContainingPage.getDriver();
+    }
+
+    abstract public String getName();
 
     abstract public boolean isLoaded();
 

@@ -29,8 +29,13 @@ package sulfur;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import sulfur.factories.exceptions.SFailedToCreatePageComponentException;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ivan De Marino
@@ -43,7 +48,7 @@ public class SPage {
 
     private final WebDriver mDriver;
     private final String mInitialUrl;
-
+    private Map<String, SPageComponent> mPageComponents;
 
     /**
      * Copy-constructor.
@@ -51,7 +56,11 @@ public class SPage {
      * @param page SPage to copy from. It will also copy the "opened" status.
      */
     public SPage(SPage page) {
+        // Straight copy
         mDriver = page.getDriver();
+        mPageComponents = page.mPageComponents;
+
+        // If the page is already open, grab the "currentUrl" as "initialUrl" for this new page
         if (page.isOpen()) {
             mInitialUrl = page.getCurrentUrl();
             mOpened = true;
@@ -68,22 +77,56 @@ public class SPage {
      * NOTE: Calls to SPage#open() will have no effect.
      *
      * @param driver WebDriver intance, initialised and with the page already loaded.
+     * @param componentClassnames Classnames of the SPageComponent that this SPage have to contain
      */
-    public SPage(WebDriver driver) {
+    public SPage(WebDriver driver, String[] componentClassnames) {
         mDriver = driver;
         mOpened = true;
         mInitialUrl = mDriver.getCurrentUrl();
+        initPageComponentInstances(componentClassnames);
     }
 
     /**
      * Construct a Page Object, not yet opened.
      * @param driver WebDriver instance, initialised and ready to use
      * @param initialUrl URL that will be used on SPage#open()
+     * @param componentClassnames Classnames of the SPageComponent that this SPage have to contain
      */
-    public SPage(WebDriver driver, String initialUrl) {
+    public SPage(WebDriver driver, String initialUrl, String[] componentClassnames) {
         mDriver = driver;
         mOpened = false;
         mInitialUrl = initialUrl;
+        initPageComponentInstances(componentClassnames);
+    }
+
+    /**
+     * Initializes the map of SPageComponent
+     * @param componentClassnames Classnames to use when creating a SPageComponent instance
+     */
+    private void initPageComponentInstances(String[] componentClassnames) {
+        mPageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
+        for (String componentClassname : componentClassnames) {
+            SPageComponent newPageComponent = createPageComponentInstance(componentClassname, this);
+            mPageComponents.put(newPageComponent.getName(), newPageComponent);
+        }
+    }
+
+    /**
+     * Create instance of given SPageComponent
+     *
+     * @param componentClassname Classname of the SPageComponent to create
+     * @param containingPage SPage that will contain the Component
+     * @return Instance of the SPageComponent
+     * @throws sulfur.factories.exceptions.SFailedToCreatePageComponentException
+     */
+    private SPageComponent createPageComponentInstance(String componentClassname, SPage containingPage) {
+        try {
+            Class<?> componentClass = Class.forName(componentClassname);
+            Constructor<?> componentConstructor = componentClass.getConstructor(SPage.class);
+            return (SPageComponent) componentConstructor.newInstance(containingPage);
+        } catch (Exception e) {
+            throw new SFailedToCreatePageComponentException(e);
+        }
     }
 
     public void setCookie(Cookie cookie) {
@@ -143,11 +186,11 @@ public class SPage {
     }
 
     public SPageComponent getComponent(String componentName) {
-        return null;
+        return mPageComponents.get(componentName);
     }
 
-    public List<SPageComponent> getComponents() {
-        return null;
+    public Map<String, SPageComponent> getComponents() {
+        return mPageComponents;
     }
 
     /**

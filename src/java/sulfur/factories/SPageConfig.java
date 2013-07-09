@@ -113,7 +113,7 @@ public class SPageConfig {
         return null == name ? filename.replace(SConsts.EXTENSION_PAGE_CONFIG_FILE, "") : name;
     }
 
-    public String[] getComponents() {
+    public String[] getComponentClassnames() {
         return components;
     }
 
@@ -160,7 +160,7 @@ public class SPageConfig {
     public void logDebug(Logger logger) {
         logger.debug("  filename: " + getFilename());
         logger.debug("  name: " + getName());
-        logger.debug("  components: " + Arrays.toString(getComponents()));
+        logger.debug("  components: " + Arrays.toString(getComponentClassnames()));
         logger.debug("  path: " + getPath());
         logger.debug("  pathParams: " + getPathParams());
         logger.debug("  pathMandatoryParams: " + getPathMandatoryParams());
