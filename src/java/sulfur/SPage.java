@@ -39,11 +39,50 @@ import java.util.List;
  */
 public class SPage {
 
+    private boolean mOpened;
+
     private final WebDriver mDriver;
     private final String mInitialUrl;
 
+
+    /**
+     * Copy-constructor.
+     *
+     * @param page SPage to copy from. It will also copy the "opened" status.
+     */
+    public SPage(SPage page) {
+        mDriver = page.getDriver();
+        if (page.isOpen()) {
+            mInitialUrl = page.getCurrentUrl();
+            mOpened = true;
+        } else {
+            mInitialUrl = page.getInitialUrl();
+            mOpened = false;
+        }
+    }
+
+    /**
+     * Construct a Page Object, already opened.
+     * This is used to when a Page interaction causes navigation to another page.
+     *
+     * NOTE: Calls to SPage#open() will have no effect.
+     *
+     * @param driver WebDriver intance, initialised and with the page already loaded.
+     */
+    public SPage(WebDriver driver) {
+        mDriver = driver;
+        mOpened = true;
+        mInitialUrl = mDriver.getCurrentUrl();
+    }
+
+    /**
+     * Construct a Page Object, not yet opened.
+     * @param driver WebDriver instance, initialised and ready to use
+     * @param initialUrl URL that will be used on SPage#open()
+     */
     public SPage(WebDriver driver, String initialUrl) {
         mDriver = driver;
+        mOpened = false;
         mInitialUrl = initialUrl;
     }
 
@@ -51,13 +90,32 @@ public class SPage {
         mDriver.manage().addCookie(cookie);
     }
 
+    /**
+     * Open the Page.
+     * It emulates the action of the User.
+     * NOTE: An Opened page can't be reopened.
+     */
     public void open() {
         // TODO - too basic
-        mDriver.get(mInitialUrl);
+        if (!mOpened) {
+            mDriver.get(mInitialUrl);
+        }
+        mOpened = true;
     }
 
-    public void close() {
+    /**
+     * Disposes of a Page.
+     * After this, the Page object and the internal Driver become unusable (i.e. WebDriver is quitted).
+     */
+    public void dispose() {
         mDriver.quit();
+    }
+
+    /**
+     * @return Returns "false" before the SPage#open() method has been invoked.
+     */
+    public boolean isOpen() {
+        return mOpened;
     }
 
     public String getTitle() {

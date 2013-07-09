@@ -39,41 +39,41 @@ import java.util.*;
  */
 public class SBaseTest {
 
-    private List<SPage> mPagesToCloseAfterTest = new ArrayList<SPage>();
+    private List<SPage> mPagesToDisposeAfterTest = new ArrayList<SPage>();
 
     /**
      * Utility method to ensure, even on test failure, the SPage object is correctly closed (i.e. "driver.quit()" is invoked).
      *
-     * @see SBaseTest#closePagesAfterMethod()
-     * @param page SPage to close after the test.
+     * @see SBaseTest#disposePagesAfterMethod()
+     * @param page SPage to dispose after the test.
      */
-    protected SPage doCloseAfterMethod(SPage page) {
-        mPagesToCloseAfterTest.add(page);
+    protected SPage disposeAfterMethod(SPage page) {
+        mPagesToDisposeAfterTest.add(page);
         return page;
     }
 
     @AfterMethod
-    protected void closePagesAfterMethod() {
-        for (SPage p : mPagesToCloseAfterTest) {
-            p.close();
+    protected void disposePagesAfterMethod() {
+        for (SPage p : mPagesToDisposeAfterTest) {
+            p.dispose();
         }
     }
 
     /**
-     * Utility method that creates a SPage that is already listed as a "closing after method".
+     * Utility method that creates a SPage that is already listed as a "dispose after method".
      * Signature reflects the @see SPageFactory#createPage signature.
      *
      * @param driverName
      * @param pageName
      * @param pathParams
      * @param queryParams
-     * @return SPage that is already added to the list of SPage that will "close after method".
+     * @return SPage that is already added to the list of SPage that will "dispose after method".
      */
-    protected SPage createSelfClosingPage(String driverName,
-                                         String pageName,
-                                         Map<String, String> pathParams,
-                                         Map<String, String> queryParams) {
-        return doCloseAfterMethod(SPageFactory.getInstance().createPage(
+    protected SPage createSelfDisposingPage(String driverName,
+                                            String pageName,
+                                            Map<String, String> pathParams,
+                                            Map<String, String> queryParams) {
+        return disposeAfterMethod(SPageFactory.getInstance().createPage(
                 driverName, pageName,
                 pathParams, queryParams));
     }
