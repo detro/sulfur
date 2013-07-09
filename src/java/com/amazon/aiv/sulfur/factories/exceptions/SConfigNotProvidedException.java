@@ -1,20 +1,19 @@
 package com.amazon.aiv.sulfur.factories.exceptions;
 
-import com.amazon.aiv.sulfur.factories.Consts;
-import com.amazon.aiv.sulfur.factories.PageConfigFactory;
+import com.amazon.aiv.sulfur.factories.SConsts;
 
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class ConfigNotProvidedException extends RuntimeException {
+public class SConfigNotProvidedException extends RuntimeException {
 
-    public ConfigNotProvidedException() {
+    public SConfigNotProvidedException() {
         super();
     }
 
     @Override
     public String getMessage() {
         return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
-                Consts.SYSPROP_CONFIG_FILE_PATH);
+                SConsts.SYSPROP_CONFIG_FILE_PATH);
     }
 }

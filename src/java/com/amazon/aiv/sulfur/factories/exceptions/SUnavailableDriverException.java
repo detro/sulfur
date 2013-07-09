@@ -3,9 +3,9 @@ package com.amazon.aiv.sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class UnavailableDriverException extends RuntimeException {
+public class SUnavailableDriverException extends RuntimeException {
 
-    public UnavailableDriverException(String driverName) {
+    public SUnavailableDriverException(String driverName) {
         super(driverName);
     }
 

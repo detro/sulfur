@@ -1,6 +1,6 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.Page;
+import com.amazon.aiv.sulfur.SPage;
 import com.amazon.aiv.sulfur.factories.exceptions.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -22,40 +22,40 @@ import java.util.Set;
  *
  * TODO
  */
-public class PageFactory {
-    private static final Logger LOG = Logger.getLogger(PageFactory.class);
+public class SPageFactory {
+    private static final Logger LOG = Logger.getLogger(SPageFactory.class);
 
-    private final Config mConfig;
-    private final PageConfigFactory mPageConfigFactory;
+    private final SConfig mConfig;
+    private final SPageConfigFactory mPageConfigFactory;
 
-    private static PageFactory singleton = null;
+    private static SPageFactory singleton = null;
 
-    private PageFactory() {
+    private SPageFactory() {
         // Read configuration file location
-        String configFilePath = System.getProperty(Consts.SYSPROP_CONFIG_FILE_PATH);
+        String configFilePath = System.getProperty(SConsts.SYSPROP_CONFIG_FILE_PATH);
         if (null == configFilePath) {
-            throw new ConfigNotProvidedException();
+            throw new SConfigNotProvidedException();
         }
 
         // Parse configuration file
         Gson gson = new Gson();
         try {
             FileReader configFileReader = new FileReader(configFilePath);
-            mConfig = gson.fromJson(configFileReader, Config.class);
+            mConfig = gson.fromJson(configFileReader, SConfig.class);
 
             // Logging
             LOG.debug("FOUND Sulfur Config file: " + configFilePath);
             mConfig.logDebug(LOG);
         } catch (FileNotFoundException fnfe) {
             LOG.error("INVALID Config (not found)");
-            throw new InvalidConfigException(configFilePath);
+            throw new SInvalidConfigException(configFilePath);
         } catch (JsonSyntaxException jse) {
             LOG.error("INVALID Config (malformed)");
-            throw new InvalidConfigException(configFilePath, jse);
+            throw new SInvalidConfigException(configFilePath, jse);
         }
 
-        // Fetch a PageConfigFactory
-        mPageConfigFactory = PageConfigFactory.getInstance();
+        // Fetch a SPageConfigFactory
+        mPageConfigFactory = SPageConfigFactory.getInstance();
 
         LOG.debug("Available Pages: " + getAvailablePageConfigs());
     }
@@ -63,18 +63,18 @@ public class PageFactory {
     /**
      * Factory Method
      *
-     * @return The PageFactory
+     * @return The SPageFactory
      */
-    public synchronized static PageFactory getInstance() {
+    public synchronized static SPageFactory getInstance() {
         if (null == singleton) {
-            singleton = new PageFactory();
+            singleton = new SPageFactory();
         }
 
         return singleton;
     }
 
     /**
-     * Utility method to get rid of the PageFactory Singleton Instance.
+     * Utility method to get rid of the SPageFactory Singleton Instance.
      * NOTE: Make sure you know what you are doing when using this.
      */
     public synchronized static void clearInstance() {
@@ -82,41 +82,41 @@ public class PageFactory {
     }
 
     /**
-     * Creates a Page.
+     * Creates a SPage.
      * It validates the input parameters, checking if the requested driver exists, if the page exists and the
      * mandatory path and query parameters are all provided.
      *
-     * NOTE: The returned Page hasn't loaded yet, so the User can still operate on it before the initial HTTP GET.
+     * NOTE: The returned SPage hasn't loaded yet, so the User can still operate on it before the initial HTTP GET.
      *
-     * @param driverName Possible values are listed in @see Consts interface
-     * @param pageName Name of the Page we want to open. It must be part of the given PageConfig(s)
-     * @param pathParams Map of parameters that will be set in the Page URL Path (@see PageConfig)
-     * @param queryParams Map of parameters that will be set in the Page URL Query (@see PageConfig)
-     * @return A "ready to open" Page object
+     * @param driverName Possible values are listed in @see SConsts interface
+     * @param pageName Name of the SPage we want to open. It must be part of the given SPageConfig(s)
+     * @param pathParams Map of parameters that will be set in the SPage URL Path (@see SPageConfig)
+     * @param queryParams Map of parameters that will be set in the SPage URL Query (@see SPageConfig)
+     * @return A "ready to open" SPage object
      */
-    public Page createPage(String driverName,
+    public SPage createPage(String driverName,
                            String pageName,
                            Map<String, String> pathParams,
                            Map<String, String> queryParams) {
 
         // Validate Driver Name
         if (!getConfig().getDrivers().contains(driverName)) {
-            throw new UnavailableDriverException(driverName);
+            throw new SUnavailableDriverException(driverName);
         }
-        // Validate Page Name
+        // Validate SPage Name
         if (!getAvailablePageConfigs().contains(pageName)) {
-            throw new UnavailablePageException(pageName);
+            throw new SUnavailablePageException(pageName);
         }
 
-        // Fetch required PageConfig
-        PageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
+        // Fetch required SPageConfig
+        SPageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
 
-        // Compose URL Path & Query to the Page
+        // Compose URL Path & Query to the SPage
         String urlPath = pageConfig.composeUrlPath(pathParams);
         String urlQuery = pageConfig.composeUrlQuery(queryParams);
 
         // Create the requested driver
-        WebDriver driver = WebDriverFactory.createDriver(driverName);
+        WebDriver driver = SWebDriverFactory.createDriver(driverName);
 
         // Create the destination URL
         String url;
@@ -124,10 +124,10 @@ public class PageFactory {
             url = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
         } catch (MalformedURLException mue) {
             LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageName), mue);
-            throw new FailedToCreatePageException(mue);
+            throw new SFailedToCreatePageException(mue);
         }
 
-        return new Page(driver, url);
+        return new SPage(driver, url);
     }
 
     public Set<String> getAvailablePageConfigs() {
@@ -135,9 +135,9 @@ public class PageFactory {
     }
 
     /**
-     * @return The Sulfur Configuration currently used by the PageFactory
+     * @return The Sulfur Configuration currently used by the SPageFactory
      */
-    public Config getConfig() {
+    public SConfig getConfig() {
         return mConfig;
     }
 }

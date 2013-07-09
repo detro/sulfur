@@ -7,11 +7,11 @@ import org.openqa.selenium.WebDriver;
  *
  * TODO
  */
-public abstract class PageComponent {
+public abstract class SPageComponent {
 
     private final WebDriver mDriver;
 
-    public PageComponent(WebDriver driver) {
+    public SPageComponent(WebDriver driver) {
         mDriver = driver;
     }
 

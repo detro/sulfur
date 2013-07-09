@@ -1,8 +1,8 @@
 package com.amazon.aiv.sulfur.test;
 
-import com.amazon.aiv.sulfur.BaseTest;
-import com.amazon.aiv.sulfur.Page;
-import com.amazon.aiv.sulfur.factories.Consts;
+import com.amazon.aiv.sulfur.SBaseTest;
+import com.amazon.aiv.sulfur.SPage;
+import com.amazon.aiv.sulfur.factories.SConsts;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -15,11 +15,11 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Ivan De Marino - demarino@amazon.com
  */
-public class AllPagesAndDriversTest extends BaseTest {
+public class AllPagesAndDriversTest extends SBaseTest {
 
     public AllPagesAndDriversTest() {
-        System.setProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.page.configs");
-        System.setProperty(Consts.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.page.configs");
+        System.setProperty(SConsts.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
     @DataProvider(name = "allPagesByAllDrivers")
@@ -37,7 +37,7 @@ public class AllPagesAndDriversTest extends BaseTest {
         queryParams.put("key2", "val2");
 
         // create the page (self closing)
-        Page p = createSelfClosingPage(driverName, pageName, pathParams, queryParams);
+        SPage p = createSelfClosingPage(driverName, pageName, pathParams, queryParams);
         // open the page
         p.open();
         // validate the title

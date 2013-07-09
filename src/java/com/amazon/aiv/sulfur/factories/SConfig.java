@@ -20,7 +20,7 @@ import java.util.Set;
  *
  * TODO
  */
-public class Config {
+public class SConfig {
     // JSON
     private String                  protocol = null;
     private String                  host = null;

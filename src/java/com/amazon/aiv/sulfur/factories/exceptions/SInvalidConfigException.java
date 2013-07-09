@@ -3,13 +3,13 @@ package com.amazon.aiv.sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class InvalidConfigException extends RuntimeException {
+public class SInvalidConfigException extends RuntimeException {
 
-    public InvalidConfigException(String invalidPageConfigPath) {
+    public SInvalidConfigException(String invalidPageConfigPath) {
         super(invalidPageConfigPath);
     }
 
-    public InvalidConfigException(String invalidPageConfigPath, Throwable cause) {
+    public SInvalidConfigException(String invalidPageConfigPath, Throwable cause) {
         super(invalidPageConfigPath, cause);
     }
 

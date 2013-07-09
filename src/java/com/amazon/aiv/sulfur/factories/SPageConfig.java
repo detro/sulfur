@@ -1,7 +1,7 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.factories.exceptions.MissingPathParamException;
-import com.amazon.aiv.sulfur.factories.exceptions.MissingQueryParamException;
+import com.amazon.aiv.sulfur.factories.exceptions.SMissingPathParamException;
+import com.amazon.aiv.sulfur.factories.exceptions.SMissingQueryParamException;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  *
  * TODO
  */
-public class PageConfig {
+public class SPageConfig {
     // JSON
     private String                  name = null;
     private String[]                components = null;
@@ -44,8 +44,8 @@ public class PageConfig {
      * The Parameters are portion of a URL Path, surrounded by curly brackets.
      * Example: "/example/path/{param1}/and/{param2}".
      *
-     * @see PageConfig#PATTERN_FORMAT_PATH_PARAM
-     * @see PageConfig#PATTERN_FORMAT_PATH_MANDATORY_PARAM
+     * @see SPageConfig#PATTERN_FORMAT_PATH_PARAM
+     * @see SPageConfig#PATTERN_FORMAT_PATH_MANDATORY_PARAM
      *
      * @param patternStr String containing the Pattern that will be used to instantiate an actual Pattern object
      * @return A Set containing the Parameter found.
@@ -83,7 +83,7 @@ public class PageConfig {
     }
 
     public String getName() {
-        return null == name ? filename.replace(Consts.EXTENSION_PAGE_CONFIG_FILE, "") : name;
+        return null == name ? filename.replace(SConsts.EXTENSION_PAGE_CONFIG_FILE, "") : name;
     }
 
     public String[] getComponents() {
@@ -145,7 +145,7 @@ public class PageConfig {
         // Check all the Mandatory Path Parameters are provided
         for (String pathMandatoryParam : getPathMandatoryParams()) {
             if (!pathParams.containsKey(pathMandatoryParam)) {
-                throw new MissingPathParamException(pathMandatoryParam);
+                throw new SMissingPathParamException(pathMandatoryParam);
             }
         }
     }
@@ -154,7 +154,7 @@ public class PageConfig {
         // Check all the Mandatory Query Parameters are provided
         for (String queryMandatoryParam : getQueryMandatoryParams()) {
             if (!queryParams.containsKey(queryMandatoryParam)) {
-                throw new MissingQueryParamException(queryMandatoryParam);
+                throw new SMissingQueryParamException(queryMandatoryParam);
             }
         }
     }
@@ -166,7 +166,7 @@ public class PageConfig {
         // If we reach here, everything is fine and we can compose the URL Path
         String resultPath = getPath();
 
-        // Replace parameters in the PageConfig Path with the given value
+        // Replace parameters in the SPageConfig Path with the given value
         for (Map.Entry<String, String> pathParam : pathParams.entrySet()) {
             resultPath = resultPath.replaceFirst(
                     String.format(PATTERN_FORMAT_PATH_PARAM, pathParam.getKey()),

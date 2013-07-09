@@ -3,9 +3,9 @@ package com.amazon.aiv.sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class MissingQueryParamException extends RuntimeException {
+public class SMissingQueryParamException extends RuntimeException {
 
-    public MissingQueryParamException(String queryParamName) {
+    public SMissingQueryParamException(String queryParamName) {
         super(queryParamName);
     }
 

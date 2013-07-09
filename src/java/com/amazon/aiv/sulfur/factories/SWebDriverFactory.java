@@ -1,6 +1,6 @@
 package com.amazon.aiv.sulfur.factories;
 
-import com.amazon.aiv.sulfur.factories.exceptions.InvalidDriverNameException;
+import com.amazon.aiv.sulfur.factories.exceptions.SInvalidDriverNameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,26 +13,26 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  *
  * TODO
  */
-public class WebDriverFactory {
+public class SWebDriverFactory {
 
-    private WebDriverFactory() {
+    private SWebDriverFactory() {
         // This class can't be instantiated
     }
 
     public static WebDriver createDriver(String driverName) {
         switch(driverName) {
-            case Consts.DRIVERNAME_FIREFOX:
+            case SConsts.DRIVERNAME_FIREFOX:
                 return createFirefoxDriver();
-            case Consts.DRIVERNAME_CHROME:
+            case SConsts.DRIVERNAME_CHROME:
                 return createChromeDriver();
-            case Consts.DRIVERNAME_IE:
+            case SConsts.DRIVERNAME_IE:
                 return createIEDriver();
-            case Consts.DRIVERNAME_PHANTOMJS:
+            case SConsts.DRIVERNAME_PHANTOMJS:
                 return createPhantomJSDriver();
-            case Consts.DRIVERNAME_OPERA:
+            case SConsts.DRIVERNAME_OPERA:
                 return createOperaDriver();
             default:
-                throw new InvalidDriverNameException(driverName);
+                throw new SInvalidDriverNameException(driverName);
         }
     }
 

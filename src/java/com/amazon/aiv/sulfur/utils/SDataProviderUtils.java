@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class DataProviderUtils {
+public class SDataProviderUtils {
 
     /**
      * Given a variable list of @DataProvider results, generate a cartesian product of available combinations.

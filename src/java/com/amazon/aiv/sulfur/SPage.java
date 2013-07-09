@@ -10,12 +10,12 @@ import java.util.List;
  *
  * TODO
  */
-public class Page {
+public class SPage {
 
     private final WebDriver mDriver;
     private final String mInitialUrl;
 
-    public Page(WebDriver driver, String initialUrl) {
+    public SPage(WebDriver driver, String initialUrl) {
         mDriver = driver;
         mInitialUrl = initialUrl;
     }
@@ -38,16 +38,16 @@ public class Page {
     }
 
     /**
-     * URL used at time the Page object was constructed.
-     * @return URL used at time the Page object was constructed.
+     * URL used at time the SPage object was constructed.
+     * @return URL used at time the SPage object was constructed.
      */
     public String getInitialUrl() {
         return mInitialUrl;
     }
 
     /**
-     * URL the Page's internal Driver is at.
-     * @return URL the Page's internal Driver is at.
+     * URL the SPage's internal Driver is at.
+     * @return URL the SPage's internal Driver is at.
      */
     public String getCurrentUrl() {
         return getDriver().getCurrentUrl();
@@ -57,21 +57,21 @@ public class Page {
         return getDriver().getPageSource();
     }
 
-    public PageComponent getComponent(String componentName) {
+    public SPageComponent getComponent(String componentName) {
         return null;
     }
 
-    public List<PageComponent> getComponents() {
+    public List<SPageComponent> getComponents() {
         return null;
     }
 
     /**
-     * Returns the Driver used by this Page.
+     * Returns the Driver used by this SPage.
      * The assumption is that you know what a WebDriver is an the effect that you will have manipulating
      * it directly.
      *
-     * It's advisable you use PageComponent(s) instead.
-     * @return The WebDriver in use to this Page Object
+     * It's advisable you use SPageComponent(s) instead.
+     * @return The WebDriver in use to this SPage Object
      */
     public WebDriver getDriver() {
         return mDriver;

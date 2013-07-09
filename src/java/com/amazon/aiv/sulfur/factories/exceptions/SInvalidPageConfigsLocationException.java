@@ -1,20 +1,19 @@
 package com.amazon.aiv.sulfur.factories.exceptions;
 
-import com.amazon.aiv.sulfur.factories.Consts;
-import com.amazon.aiv.sulfur.factories.PageConfigFactory;
+import com.amazon.aiv.sulfur.factories.SConsts;
 
 /**
  * @author Ivan De Marino <demarino@amazon.com>
  */
-public class InvalidPageConfigsLocationException extends RuntimeException {
+public class SInvalidPageConfigsLocationException extends RuntimeException {
 
-    public InvalidPageConfigsLocationException() {
+    public SInvalidPageConfigsLocationException() {
         super();
     }
 
     @Override
     public String getMessage() {
         return String.format("NOTE: Value of System Property '%s' is invalid (non-existent/empty directory?).\n",
-                Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+                SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
     }
 }

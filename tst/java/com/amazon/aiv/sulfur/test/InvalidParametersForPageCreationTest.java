@@ -1,32 +1,32 @@
 package com.amazon.aiv.sulfur.test;
 
-import com.amazon.aiv.sulfur.BaseTest;
-import com.amazon.aiv.sulfur.Page;
-import com.amazon.aiv.sulfur.factories.Consts;
-import com.amazon.aiv.sulfur.factories.PageFactory;
-import com.amazon.aiv.sulfur.factories.exceptions.MissingPathParamException;
-import com.amazon.aiv.sulfur.factories.exceptions.MissingQueryParamException;
-import com.amazon.aiv.sulfur.factories.exceptions.UnavailableDriverException;
-import com.amazon.aiv.sulfur.factories.exceptions.UnavailablePageException;
+import com.amazon.aiv.sulfur.SBaseTest;
+import com.amazon.aiv.sulfur.SPage;
+import com.amazon.aiv.sulfur.factories.SConsts;
+import com.amazon.aiv.sulfur.factories.SPageFactory;
+import com.amazon.aiv.sulfur.factories.exceptions.SMissingPathParamException;
+import com.amazon.aiv.sulfur.factories.exceptions.SMissingQueryParamException;
+import com.amazon.aiv.sulfur.factories.exceptions.SUnavailableDriverException;
+import com.amazon.aiv.sulfur.factories.exceptions.SUnavailablePageException;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
 /**
- * Tests to check that Invalid Parameters, provided at Page-creation time, cause the expected failure.
+ * Tests to check that Invalid Parameters, provided at SPage-creation time, cause the expected failure.
  *
  * @author Ivan De Marino - demarino@amazon.com
  */
-public class InvalidParametersForPageCreationTest extends BaseTest {
+public class InvalidParametersForPageCreationTest extends SBaseTest {
 
     public InvalidParametersForPageCreationTest() {
-        System.setProperty(Consts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.page.configs");
-        System.setProperty(Consts.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.page.configs");
+        System.setProperty(SConsts.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = MissingQueryParamException.class)
+    @Test(dataProvider = "driverProvider", expectedExceptions = SMissingQueryParamException.class)
     public void shouldFailIfMandatoryQueryParameterIsMissing(String driverName) {
-        Page playerSoloMode = PageFactory.getInstance().createPage(
+        SPage playerSoloMode = SPageFactory.getInstance().createPage(
                 driverName,
                 "playersolomode",
                 new HashMap<String, String>(),
@@ -34,9 +34,9 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
         playerSoloMode.open();
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = MissingPathParamException.class)
+    @Test(dataProvider = "driverProvider", expectedExceptions = SMissingPathParamException.class)
     public void shouldFailIfMandatoryPathParameterIsMissing(String driverName) {
-        Page playerSoloMode = PageFactory.getInstance().createPage(
+        SPage playerSoloMode = SPageFactory.getInstance().createPage(
                 driverName,
                 "detailspage",
                 new HashMap<String, String>(),
@@ -44,9 +44,9 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
         playerSoloMode.open();
     }
 
-    @Test(dataProvider = "pageProvider", expectedExceptions = UnavailableDriverException.class)
+    @Test(dataProvider = "pageProvider", expectedExceptions = SUnavailableDriverException.class)
     public void shouldFailIfDriverNameIsInvalid(String pageName) {
-        Page playerSoloMode = PageFactory.getInstance().createPage(
+        SPage playerSoloMode = SPageFactory.getInstance().createPage(
                 "madeUpDriver",
                 pageName,
                 new HashMap<String, String>(),
@@ -54,9 +54,9 @@ public class InvalidParametersForPageCreationTest extends BaseTest {
         playerSoloMode.open();
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = UnavailablePageException.class)
+    @Test(dataProvider = "driverProvider", expectedExceptions = SUnavailablePageException.class)
     public void shouldFailIfPageNameIsInvalid(String driverName) {
-        Page playerSoloMode = PageFactory.getInstance().createPage(
+        SPage playerSoloMode = SPageFactory.getInstance().createPage(
                 driverName,
                 "nonExistentPage",
                 new HashMap<String, String>(),
