@@ -29,7 +29,7 @@ package sulfur.test;
 
 import sulfur.SBaseTest;
 import sulfur.SPage;
-import sulfur.factories.SConsts;
+import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
 import sulfur.factories.exceptions.SMissingPathParamException;
 import sulfur.factories.exceptions.SMissingQueryParamException;
@@ -47,8 +47,8 @@ import java.util.HashMap;
 public class InvalidParametersForPageCreationTest extends SBaseTest {
 
     public InvalidParametersForPageCreationTest() {
-        System.setProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SConsts.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
+        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
     @Test(dataProvider = "driverProvider", expectedExceptions = SMissingQueryParamException.class)

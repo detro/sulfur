@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sulfur.test.unit;
 
 import sulfur.SBaseTest;
-import sulfur.factories.SConsts;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.exceptions.SInvalidPageConfigsLocationException;
 import sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException;
@@ -44,21 +43,21 @@ public class SPageConfigFactoryTest extends SBaseTest {
     @Test
     public void shouldGrabInstanceOfPageConfigFactory() {
         SPageConfigFactory.clearInstance();
-        System.setProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
         assertNotNull(SPageConfigFactory.getInstance());
     }
 
     @Test(expectedExceptions = SPageConfigsLocationNotProvidedException.class)
     public void shouldFailToGrabInstanceOfPageConfigFactoryIfPathToPageConfigDirIsInvalid() {
         SPageConfigFactory.clearInstance();
-        System.clearProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+        System.clearProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH);
         SPageConfigFactory.getInstance();
     }
 
     @Test(expectedExceptions = SInvalidPageConfigsLocationException.class)
     public void shouldFailToGrabInstanceOfPageConfigFactoryIfPageConfigDirIsEmpty() {
         SPageConfigFactory.clearInstance();
-        System.setProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst");
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst");
         SPageConfigFactory.getInstance();
     }
 

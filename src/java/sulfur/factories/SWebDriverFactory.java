@@ -42,21 +42,27 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class SWebDriverFactory {
 
+    public static final String DRIVERNAME_FIREFOX = "firefox";
+    public static final String DRIVERNAME_CHROME = "chrome";
+    public static final String DRIVERNAME_IE = "ie";
+    public static final String DRIVERNAME_PHANTOMJS = "phantomjs";
+    public static final String DRIVERNAME_OPERA = "opera";
+
     private SWebDriverFactory() {
         // This class can't be instantiated
     }
 
     public static WebDriver createDriver(String driverName) {
         switch(driverName) {
-            case SConsts.DRIVERNAME_FIREFOX:
+            case DRIVERNAME_FIREFOX:
                 return createFirefoxDriver();
-            case SConsts.DRIVERNAME_CHROME:
+            case DRIVERNAME_CHROME:
                 return createChromeDriver();
-            case SConsts.DRIVERNAME_IE:
+            case DRIVERNAME_IE:
                 return createIEDriver();
-            case SConsts.DRIVERNAME_PHANTOMJS:
+            case DRIVERNAME_PHANTOMJS:
                 return createPhantomJSDriver();
-            case SConsts.DRIVERNAME_OPERA:
+            case DRIVERNAME_OPERA:
                 return createOperaDriver();
             default:
                 throw new SInvalidDriverNameException(driverName);

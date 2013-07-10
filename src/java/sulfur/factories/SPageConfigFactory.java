@@ -50,7 +50,13 @@ import java.util.Map;
  * TODO
  */
 public class SPageConfigFactory {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(SPageConfigFactory.class);
+
+    /** MANDATORY System Property to instruct Sulfur where to look for SPage Configs files */
+    public static final String SYSPROP_PAGE_CONFIGS_DIR_PATH    = "sulfur.page.configs";
+    /** MANDATORY Extension that SPage Config files have to use */
+    public static final String EXTENSION_PAGE_CONFIG_FILE = ".sulfur.page.config.json";
 
     private static SPageConfigFactory singleton = null;
 
@@ -87,7 +93,7 @@ public class SPageConfigFactory {
      */
     private SPageConfigFactory() {
         // Read path to SPageConfig Files directory
-        String pageConfigsDirPath = System.getProperties().getProperty(SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+        String pageConfigsDirPath = System.getProperties().getProperty(SYSPROP_PAGE_CONFIGS_DIR_PATH);
         if (null == pageConfigsDirPath) {           //< check validity
             throw new SPageConfigsLocationNotProvidedException();
         }
@@ -97,7 +103,7 @@ public class SPageConfigFactory {
         File[] pageConfigsFiles = pageConfigsDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File fileDir, String fileName) {
-                return fileName.endsWith(SConsts.EXTENSION_PAGE_CONFIG_FILE);
+                return fileName.endsWith(EXTENSION_PAGE_CONFIG_FILE);
             }
         });
         if (null == pageConfigsFiles || pageConfigsFiles.length == 0) {             //< check validity

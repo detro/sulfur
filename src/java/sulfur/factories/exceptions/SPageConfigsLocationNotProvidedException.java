@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories.exceptions;
 
-import sulfur.factories.SConsts;
+import sulfur.factories.SPageConfigFactory;
 
 /**
  * @author Ivan De Marino
@@ -41,6 +41,6 @@ public class SPageConfigsLocationNotProvidedException extends RuntimeException {
     @Override
     public String getMessage() {
         return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
-                SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+                SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH);
     }
 }

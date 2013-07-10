@@ -110,7 +110,7 @@ public class SPageConfig {
     }
 
     public String getName() {
-        return null == name ? filename.replace(SConsts.EXTENSION_PAGE_CONFIG_FILE, "") : name;
+        return null == name ? filename.replace(SPageConfigFactory.EXTENSION_PAGE_CONFIG_FILE, "") : name;
     }
 
     public String[] getComponentClassnames() {

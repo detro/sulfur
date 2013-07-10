@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories.exceptions;
 
-import sulfur.factories.SConsts;
+import sulfur.factories.SPageConfigFactory;
 
 /**
  * @author Ivan De Marino
@@ -41,6 +41,6 @@ public class SInvalidPageConfigsLocationException extends RuntimeException {
     @Override
     public String getMessage() {
         return String.format("NOTE: Value of System Property '%s' is invalid (non-existent/empty directory?).\n",
-                SConsts.SYSPROP_PAGE_CONFIGS_DIR_PATH);
+                SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH);
     }
 }

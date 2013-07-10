@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sulfur.factories;
 
 import sulfur.SPage;
-import sulfur.SPageComponent;
 import sulfur.factories.exceptions.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -37,7 +36,6 @@ import org.openqa.selenium.WebDriver;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -52,7 +50,11 @@ import java.util.Set;
  * TODO
  */
 public class SPageFactory {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(SPageFactory.class);
+
+    /** MANDATORY System Property to instruct Sulfur where to look for the Config file */
+    public static final String SYSPROP_CONFIG_FILE_PATH = "sulfur.config";
 
     private final SConfig mConfig;
     private final SPageConfigFactory mPageConfigFactory;
@@ -61,7 +63,7 @@ public class SPageFactory {
 
     private SPageFactory() {
         // Read configuration file location
-        String configFilePath = System.getProperty(SConsts.SYSPROP_CONFIG_FILE_PATH);
+        String configFilePath = System.getProperty(SYSPROP_CONFIG_FILE_PATH);
         if (null == configFilePath) {
             throw new SConfigNotProvidedException();
         }
@@ -117,7 +119,7 @@ public class SPageFactory {
      *
      * NOTE: The returned SPage hasn't loaded yet, so the User can still operate on it before the initial HTTP GET.
      *
-     * @param driverName Possible values are listed in @see SConsts interface
+     * @param driverName Possible values are listed in @see SWebDriverFactory
      * @param pageName Name of the SPage we want to open. It must be part of the given SPageConfig(s)
      * @param pathParams Map of parameters that will be set in the SPage URL Path (@see SPageConfig)
      * @param queryParams Map of parameters that will be set in the SPage URL Query (@see SPageConfig)
