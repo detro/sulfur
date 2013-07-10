@@ -164,7 +164,7 @@ public class SPageFactory {
         } catch (Exception e) {
             // In case something goes wrong when creating the SPage, it's important we "quit()" the driver.
             // We don't want Browser instances hanging around
-            LOG.fatal(String.format("EXCEPTION thrown while trying to create Page '%s'"), e);
+            LOG.fatal(String.format("EXCEPTION thrown while trying to create Page '%s'", pageName), e);
             driver.quit();
             throw e;
         }
