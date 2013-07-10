@@ -29,10 +29,8 @@ package sulfur;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import sulfur.factories.exceptions.SFailedToCreatePageComponentException;
+import sulfur.factories.SPageComponentFactory;
 
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -81,7 +79,7 @@ public class SPage {
         mDriver = driver;
         mOpened = true;
         mInitialUrl = mDriver.getCurrentUrl();
-        mPageComponents = SPage.createPageComponentInstances(componentClassnames, this);
+        mPageComponents = SPageComponentFactory.createPageComponentInstances(componentClassnames, this);
     }
 
     /**
@@ -94,40 +92,7 @@ public class SPage {
         mDriver = driver;
         mOpened = false;
         mInitialUrl = initialUrl;
-        mPageComponents = SPage.createPageComponentInstances(componentClassnames, this);
-    }
-
-    /**
-     * Initializes the map of SPageComponent
-     * @param componentClassnames Classnames to use when creating a SPageComponent instance
-     */
-    private static Map<String, SPageComponent> createPageComponentInstances(String[] componentClassnames, SPage containingPage) {
-        Map<String, SPageComponent> pageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
-
-        for (String componentClassname : componentClassnames) {
-            SPageComponent newPageComponent = SPage.createPageComponentInstance(componentClassname, containingPage);
-            pageComponents.put(newPageComponent.getName(), newPageComponent);
-        }
-
-        return pageComponents;
-    }
-
-    /**
-     * Create instance of given SPageComponent
-     *
-     * @param componentClassname Classname of the SPageComponent to create
-     * @param containingPage SPage that will contain the Component
-     * @return Instance of the SPageComponent
-     * @throws sulfur.factories.exceptions.SFailedToCreatePageComponentException
-     */
-    private static SPageComponent createPageComponentInstance(String componentClassname, SPage containingPage) {
-        try {
-            Class<?> componentClass = Class.forName(componentClassname);
-            Constructor<?> componentConstructor = componentClass.getConstructor(SPage.class);
-            return (SPageComponent) componentConstructor.newInstance(containingPage);
-        } catch (Exception e) {
-            throw new SFailedToCreatePageComponentException(e);
-        }
+        mPageComponents = SPageComponentFactory.createPageComponentInstances(componentClassnames, this);
     }
 
     public void setCookie(Cookie cookie) {
