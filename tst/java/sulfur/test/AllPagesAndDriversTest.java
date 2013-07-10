@@ -46,13 +46,18 @@ import static org.testng.Assert.assertTrue;
 public class AllPagesAndDriversTest extends SBaseTest {
 
     public AllPagesAndDriversTest() {
+        SPageConfigFactory.clearInstance();
+        SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
         System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
     @DataProvider(name = "allPagesByAllDrivers")
     public Iterator<Object[]> provideAllPagesByAllDrivers() {
-        return makeCartesianProvider(provideConfiguredPages(), provideConfiguredDrivers());
+        return makeCartesianProvider(new Object[][] {
+                { "detailspage" },
+                { "playersolomode" }
+        }, provideConfiguredDrivers());
     }
 
     @Test(dataProvider = "allPagesByAllDrivers")

@@ -47,6 +47,8 @@ import java.util.HashMap;
 public class InvalidParametersForPageCreationTest extends SBaseTest {
 
     public InvalidParametersForPageCreationTest() {
+        SPageConfigFactory.clearInstance();
+        SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
         System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
