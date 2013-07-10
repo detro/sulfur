@@ -44,38 +44,19 @@ public class SBaseTest {
     /**
      * Utility method to ensure, even on test failure, the SPage object is correctly closed (i.e. "driver.quit()" is invoked).
      *
-     * @see SBaseTest#disposePagesAfterMethod()
+     * @see SBaseTest#disposePagesAfterTestMethod()
      * @param page SPage to dispose after the test.
      */
-    protected SPage disposeAfterMethod(SPage page) {
+    protected SPage disposeAfterTestMethod(SPage page) {
         mPagesToDisposeAfterTest.add(page);
         return page;
     }
 
     @AfterMethod
-    protected void disposePagesAfterMethod() {
+    protected void disposePagesAfterTestMethod() {
         for (SPage p : mPagesToDisposeAfterTest) {
             p.dispose();
         }
-    }
-
-    /**
-     * Utility method that creates a SPage that is already listed as a "dispose after method".
-     * Signature reflects the @see SPageFactory#createPage signature.
-     *
-     * @param driverName
-     * @param pageName
-     * @param pathParams
-     * @param queryParams
-     * @return SPage that is already added to the list of SPage that will "dispose after method".
-     */
-    protected SPage createSelfDisposingPage(String driverName,
-                                            String pageName,
-                                            Map<String, String> pathParams,
-                                            Map<String, String> queryParams) {
-        return disposeAfterMethod(SPageFactory.getInstance().createPage(
-                driverName, pageName,
-                pathParams, queryParams));
     }
 
     /**
