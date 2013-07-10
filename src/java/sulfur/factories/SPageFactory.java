@@ -170,6 +170,17 @@ public class SPageFactory {
         }
     }
 
+    public SPage createClonePage(SPage pageToClone) {
+        return new SPage(pageToClone);
+    }
+
+    public SPage createNextPage(SPage currentPage, String pageName) {
+        // Fetch required SPageConfig
+        SPageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
+        // Build a new page using the same driver as "currentPage"
+        return new SPage(currentPage.getDriver(), pageConfig.getComponentClassnames());
+    }
+
     public Set<String> getAvailablePageConfigs() {
         return mPageConfigFactory.getPageConfigs().keySet();
     }
