@@ -64,8 +64,10 @@ public class AllPagesAndDriversTest extends SBaseTest {
         queryParams.put("asin", "B00CV77WBU");
         queryParams.put("key2", "val2");
 
-        // create the page (self closing)
-        SPage p = createSelfDisposingPage(driverName, pageName, pathParams, queryParams);
+        // create the page
+        SPage p = SPageFactory.getInstance().createPage(driverName, pageName, pathParams, queryParams);
+        // Make sure it's not "left hanging" after the test has finished
+        disposeAfterTestMethod(p);
         // open the page
         p.open();
         // validate the title
