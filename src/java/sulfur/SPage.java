@@ -33,8 +33,6 @@ import sulfur.factories.exceptions.SFailedToCreatePageComponentException;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +46,7 @@ public class SPage {
 
     private final WebDriver mDriver;
     private final String mInitialUrl;
-    private Map<String, SPageComponent> mPageComponents;
+    private final Map<String, SPageComponent> mPageComponents;
 
     /**
      * Copy-constructor.
@@ -83,7 +81,7 @@ public class SPage {
         mDriver = driver;
         mOpened = true;
         mInitialUrl = mDriver.getCurrentUrl();
-        initPageComponentInstances(componentClassnames);
+        mPageComponents = SPage.createPageComponentInstances(componentClassnames, this);
     }
 
     /**
@@ -96,19 +94,22 @@ public class SPage {
         mDriver = driver;
         mOpened = false;
         mInitialUrl = initialUrl;
-        initPageComponentInstances(componentClassnames);
+        mPageComponents = SPage.createPageComponentInstances(componentClassnames, this);
     }
 
     /**
      * Initializes the map of SPageComponent
      * @param componentClassnames Classnames to use when creating a SPageComponent instance
      */
-    private void initPageComponentInstances(String[] componentClassnames) {
-        mPageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
+    private static Map<String, SPageComponent> createPageComponentInstances(String[] componentClassnames, SPage containingPage) {
+        Map<String, SPageComponent> pageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
+
         for (String componentClassname : componentClassnames) {
-            SPageComponent newPageComponent = createPageComponentInstance(componentClassname, this);
-            mPageComponents.put(newPageComponent.getName(), newPageComponent);
+            SPageComponent newPageComponent = SPage.createPageComponentInstance(componentClassname, containingPage);
+            pageComponents.put(newPageComponent.getName(), newPageComponent);
         }
+
+        return pageComponents;
     }
 
     /**
@@ -119,7 +120,7 @@ public class SPage {
      * @return Instance of the SPageComponent
      * @throws sulfur.factories.exceptions.SFailedToCreatePageComponentException
      */
-    private SPageComponent createPageComponentInstance(String componentClassname, SPage containingPage) {
+    private static SPageComponent createPageComponentInstance(String componentClassname, SPage containingPage) {
         try {
             Class<?> componentClass = Class.forName(componentClassname);
             Constructor<?> componentConstructor = componentClass.getConstructor(SPage.class);
@@ -161,6 +162,9 @@ public class SPage {
         return mOpened;
     }
 
+    /**
+     * @return Current Page title.
+     */
     public String getTitle() {
         return getDriver().getTitle();
     }
@@ -181,14 +185,26 @@ public class SPage {
         return getDriver().getCurrentUrl();
     }
 
+    /**
+     * @return Current Page source code (i.e. the HTML)
+     */
     public String getSource() {
         return getDriver().getPageSource();
     }
 
+    /**
+     * Get SPageComponent from the SPage
+     *
+     * @param componentName Name of the Component we are interested in
+     * @return The SPageComponent we are after, or "null" if not found
+     */
     public SPageComponent getComponent(String componentName) {
         return mPageComponents.get(componentName);
     }
 
+    /**
+     * @return A Map<String, SPageComponent> of all the Components that compose the Page (note: based on the Page Configuration).
+     */
     public Map<String, SPageComponent> getComponents() {
         return mPageComponents;
     }
@@ -203,5 +219,10 @@ public class SPage {
      */
     public WebDriver getDriver() {
         return mDriver;
+    }
+
+    @Override
+    public void finalize() {
+        dispose();
     }
 }
