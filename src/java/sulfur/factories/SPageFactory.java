@@ -160,7 +160,7 @@ public class SPageFactory {
 
         // Create and return the new SPage
         try {
-            return new SPage(driver, initialUrl, pageConfig.getComponentClassnames());
+            return new SPage(driver, initialUrl, pageConfig);
         } catch (Exception e) {
             // In case something goes wrong when creating the SPage, it's important we "quit()" the driver.
             // We don't want Browser instances hanging around
@@ -178,7 +178,7 @@ public class SPageFactory {
         // Fetch required SPageConfig
         SPageConfig pageConfig = mPageConfigFactory.getPageConfig(pageName);
         // Build a new page using the same driver as "currentPage"
-        return new SPage(currentPage.getDriver(), pageConfig.getComponentClassnames());
+        return new SPage(currentPage.getDriver(), pageConfig);
     }
 
     public Set<String> getAvailablePageConfigs() {
