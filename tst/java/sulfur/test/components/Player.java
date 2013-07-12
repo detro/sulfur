@@ -1,5 +1,6 @@
 package sulfur.test.components;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
@@ -12,10 +13,10 @@ import sulfur.SPageComponent;
  */
 public class Player extends SPageComponent {
     // Explicitly defined WebElement
-    private static final String CONTAINER_CONTAINER_ID = "player_container_container";
-    @FindBy(how = How.ID, using = CONTAINER_CONTAINER_ID)
+    private static final String ROOT_ELEMENT_ID = "player_container_container";
+    @FindBy(how = How.ID, using = ROOT_ELEMENT_ID)
     @CacheLookup
-    private WebElement playerContainerContainer;
+    private WebElement player_container_container;
 
     // Implicitly defined WebElements: those will be searched on the page by "id" and "name", using the variable name
     private WebElement player_container;
@@ -31,15 +32,20 @@ public class Player extends SPageComponent {
     }
 
     @Override
+    public By getRootElementLocator() {
+        return By.cssSelector("#" + ROOT_ELEMENT_ID);
+    }
+
+    @Override
     public boolean isLoaded() {
         // If "player_container_container" is on the page (even if not visible yet), the Player can be considered loaded
-        Object result = getContainingPage().executeScript("return document.getElementById(arguments[0]) !== null;", CONTAINER_CONTAINER_ID);
+        Object result = getContainingPage().executeScript("return document.getElementById(arguments[0]) !== null;", ROOT_ELEMENT_ID);
         return result instanceof Boolean && ((Boolean)result).booleanValue();
     }
 
     @Override
     public boolean isVisible() {
-        return playerContainerContainer.isDisplayed();
+        return player_container_container.isDisplayed();
     }
 
     public boolean isAlertsContainerVisible() {
@@ -48,10 +54,5 @@ public class Player extends SPageComponent {
 
     public boolean isPlaybackContainerVisible() {
         return player_container.isDisplayed();
-    }
-
-    @Override
-    public String getSource() {
-        return (String)getContainingPage().executeScript("return document.getElementById(arguments[0]).outerHTML;", CONTAINER_CONTAINER_ID);
     }
 }

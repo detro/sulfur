@@ -1,5 +1,6 @@
 package sulfur.test.components;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
@@ -38,6 +39,11 @@ public class PlayerSoloModeButtons extends SPageComponent {
     }
 
     @Override
+    public By getRootElementLocator() {
+        return By.cssSelector("#" + ROOT_ELEMENT_ID);
+    }
+
+    @Override
     public boolean isLoaded() {
         // TODO check for ALL the elements...
         return play.isDisplayed();
@@ -47,10 +53,5 @@ public class PlayerSoloModeButtons extends SPageComponent {
     public boolean isVisible() {
         // TODO check for ALL the elements...
         return play.isDisplayed();
-    }
-
-    @Override
-    public String getSource() {
-        return (String)getContainingPage().executeScript("return document.getElementById(arguments[0]).outerHTML;", ROOT_ELEMENT_ID);
     }
 }

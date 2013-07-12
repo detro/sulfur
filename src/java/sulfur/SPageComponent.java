@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur;
 
+import org.openqa.selenium.By;
+
 /**
  * @author Ivan De Marino
  *
@@ -55,6 +57,11 @@ public abstract class SPageComponent {
     abstract public String getName();
 
     /**
+     * @return A {@link By} locator to the Root element for this Component, "null" if none exist.
+     */
+    abstract public By getRootElementLocator();
+
+    /**
      * Returns "true" if the Component on the page has loaded.
      * How a component can be considered loaded it's up to the specific component implementation.
      *
@@ -70,7 +77,15 @@ public abstract class SPageComponent {
     abstract public boolean isVisible();
 
     /**
-     * @return HTML Source code of the component (i.e. the DOM subtree as String, if any)
+     * @return HTML Source code of the component (i.e. the DOM subtree as String), if any.
      */
-    abstract public String getSource();
+    public String getSource() {
+        By locator = getRootElementLocator();
+        if (null != locator) {
+            return (String) getContainingPage().executeScript(
+                    "return arguments[0].outerHTML;",                        //< all the HTML that makes this component
+                    getContainingPage().getDriver().findElement(locator));  //< Find the Root WebElement by it's Locator
+        }
+        return "";
+    }
 }
