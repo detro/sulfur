@@ -5,7 +5,9 @@ import sulfur.SBaseTest;
 import sulfur.SPage;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
+import sulfur.factories.exceptions.SUnavailableComponentException;
 import sulfur.test.components.Player;
+import sulfur.test.components.PlayerSoloModeButtons;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class PlayerPlaybackTest extends SBaseTest {
         System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
+//    @Test(dataProvider = "driverProvider", expectedExceptions = SUnavailableComponentException.class)
     @Test(dataProvider = "driverProvider")
     public void shouldLoadPlayerOnPlayerSoloModePage(String driverName) {
         Map<String, String> queryParams = new HashMap<String, String>();
@@ -40,9 +43,14 @@ public class PlayerPlaybackTest extends SBaseTest {
         // Wait 5 seconds for the Page to load
         p.waitForLoad(5, TimeUnit.SECONDS);
 
-        Player player = (Player)p.getComponent("Player");
+        Player player = (Player) p.getComponent("Player");
         assertTrue(player.isVisible());
         assertFalse(player.isAlertsContainerVisible());
         assertFalse(player.isPlaybackContainerVisible());
+
+        PlayerSoloModeButtons playerButtons = (PlayerSoloModeButtons) p.getComponent("PlayerSoloModeButtons");
+        assertTrue(playerButtons.isVisible());
+        playerButtons.toggleShowHide.click();
+        assertTrue(player.isPlaybackContainerVisible());
     }
 }

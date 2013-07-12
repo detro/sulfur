@@ -1,6 +1,7 @@
 {
     "components"    : [
-        "sulfur.test.components.Player"
+        "sulfur.test.components.Player",
+        "sulfur.test.components.PlayerSoloModeButtons"
     ],
     "path"          : "/gp/video/streaming/player-solo-mode.html/{ref}",
     "queryParams"   : [
