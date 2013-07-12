@@ -274,6 +274,14 @@ public class SPage {
         return mDriver;
     }
 
+    public Object executeScript(String script, Object... args) {
+        return ((JavascriptExecutor) mDriver).executeScript(script, args);
+    }
+
+    public Object executeAsyncScript(String script, Object... args) {
+        return ((JavascriptExecutor) mDriver).executeAsyncScript(script, args);
+    }
+
     @Override
     public void finalize() {
         dispose();
