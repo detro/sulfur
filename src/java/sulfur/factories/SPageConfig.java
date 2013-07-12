@@ -171,7 +171,7 @@ public class SPageConfig {
     private void checkPathParams(Map<String, String> pathParams) {
         // Check all the Mandatory Path Parameters are provided
         for (String pathMandatoryParam : getPathMandatoryParams()) {
-            if (!pathParams.containsKey(pathMandatoryParam)) {
+            if (null == pathParams || !pathParams.containsKey(pathMandatoryParam)) {
                 throw new SMissingPathParamException(pathMandatoryParam);
             }
         }
@@ -180,7 +180,7 @@ public class SPageConfig {
     private void checkQueryParams(Map<String, String> queryParams) {
         // Check all the Mandatory Query Parameters are provided
         for (String queryMandatoryParam : getQueryMandatoryParams()) {
-            if (!queryParams.containsKey(queryMandatoryParam)) {
+            if (null == queryParams || !queryParams.containsKey(queryMandatoryParam)) {
                 throw new SMissingQueryParamException(queryMandatoryParam);
             }
         }
@@ -194,10 +194,12 @@ public class SPageConfig {
         String resultPath = getPath();
 
         // Replace parameters in the SPageConfig Path with the given value
-        for (Map.Entry<String, String> pathParam : pathParams.entrySet()) {
-            resultPath = resultPath.replaceFirst(
-                    String.format(PATTERN_FORMAT_PATH_PARAM, pathParam.getKey()),
-                    pathParam.getValue());
+        if (null != pathParams) {
+            for (Map.Entry<String, String> pathParam : pathParams.entrySet()) {
+                resultPath = resultPath.replaceFirst(
+                        String.format(PATTERN_FORMAT_PATH_PARAM, pathParam.getKey()),
+                        pathParam.getValue());
+            }
         }
         // Replace all the remaining parameter (not set with the previous loop) with an empty string
         resultPath = resultPath.replaceAll(String.format(PATTERN_FORMAT_PATH_PARAM, "\\w+"), "");
@@ -211,15 +213,17 @@ public class SPageConfig {
 
         StringBuilder resultQuery = new StringBuilder();
 
-        Iterator<Map.Entry<String, String>> i = queryParams.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<String, String> queryParam = i.next();
+        if (null != queryParams) {
+            Iterator<Map.Entry<String, String>> i = queryParams.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry<String, String> queryParam = i.next();
 
-            resultQuery.append(queryParam.getKey());
-            resultQuery.append("=");
-            resultQuery.append(queryParam.getValue());
+                resultQuery.append(queryParam.getKey());
+                resultQuery.append("=");
+                resultQuery.append(queryParam.getValue());
 
-            resultQuery.append(i.hasNext() ? "&" : "");
+                resultQuery.append(i.hasNext() ? "&" : "");
+            }
         }
 
         return resultQuery.toString();
