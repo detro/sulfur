@@ -30,6 +30,7 @@ package sulfur;
 import com.google.common.base.Function;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -47,10 +48,12 @@ import java.util.concurrent.TimeUnit;
 public class SPage {
     private static final Logger LOG = Logger.getLogger(SPage.class);
 
-    /** Default Polling for waitForLoad */
-    private static final long DEFAULT_PAGELOAD_WAIT_POLLING = 10;
-    /** Default Time Unit for waitForLoad */
-    private static final TimeUnit DEFAULT_PAGELOAD_WAIT_UNIT = TimeUnit.SECONDS;
+    /** Default Polling time for SPage#waitForLoad */
+    private static final long PAGELOAD_WAIT_DEFAULT_POLLING_TIME        = 100;
+    /** Default Polling time unit for SPage#waitForLoad  */
+    private static final TimeUnit PAGELOAD_WAIT_DEFAULT_POLLING_UNIT    = TimeUnit.MILLISECONDS;
+    /** Default Timout time unit for SPage#waitForLoad  */
+    private static final TimeUnit PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT    = TimeUnit.SECONDS;
 
     private boolean mOpened;
 
@@ -121,7 +124,6 @@ public class SPage {
      * NOTE: An Opened page can't be reopened.
      */
     public void open() {
-        // TODO - too basic
         if (!mOpened) {
             LOG.debug("SPage opening: " + mInitialUrl);
 
@@ -169,21 +171,25 @@ public class SPage {
     }
 
     /**
-     * Refer to {@link SPage#waitForLoad(long, long, java.util.concurrent.TimeUnit)}.
+     * Refer to {@link SPage#waitForLoad(long, java.util.concurrent.TimeUnit, long, java.util.concurrent.TimeUnit)}
      * @param timeout Time before giving up
      */
     public void waitForLoad(long timeout) {
-        waitForLoad(timeout, DEFAULT_PAGELOAD_WAIT_UNIT);
+        waitForLoad(timeout,
+                PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT,
+                PAGELOAD_WAIT_DEFAULT_POLLING_TIME,
+                PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT);
     }
 
     /**
-     * Refer to {@link SPage#waitForLoad(long, long, java.util.concurrent.TimeUnit)}.
+     * Refer to {@link SPage#waitForLoad(long, java.util.concurrent.TimeUnit, long, java.util.concurrent.TimeUnit)}
      * @param timeout Time before giving up
      * @param unit Time Unit
      */
     public void waitForLoad(long timeout, TimeUnit unit) {
-        // Polling will be a constant multiple of the current Time Unit
-        waitForLoad(timeout, unit.convert(DEFAULT_PAGELOAD_WAIT_POLLING, unit), unit);
+        waitForLoad(timeout, unit,
+                PAGELOAD_WAIT_DEFAULT_POLLING_TIME,
+                PAGELOAD_WAIT_DEFAULT_POLLING_UNIT);
     }
 
     /**
@@ -191,13 +197,14 @@ public class SPage {
      * It will wait for all the internal SPageComponent to finish loading
      *
      * @param timeout Time before giving up the waiting
+     * @param timeoutUnit Time Unit used by timeout parameter
      * @param polling Time interval between checking if SPage has loaded
-     * @param unit Time Unit used by timeout and polling parameters
+     * @param pollingUnit Time Unit used by polling parameter
      */
-    public void waitForLoad(long timeout, long polling, TimeUnit unit) {
+    public void waitForLoad(long timeout, TimeUnit timeoutUnit, long polling, TimeUnit pollingUnit) {
         Wait<SPage> waiter = new FluentWait<SPage>(this)
-                .pollingEvery(polling, unit)
-                .withTimeout(timeout, unit);
+                .pollingEvery(polling, pollingUnit)
+                .withTimeout(timeout, timeoutUnit);
 
         waiter.until(new Function<SPage, Boolean>() {
             public Boolean apply(SPage page) {
@@ -211,8 +218,7 @@ public class SPage {
      * @return Name of the Page, based on the SPageConfig
      */
     public String getName() {
-        // TODO
-        return null;
+        return mPageConfig.getName();
     }
 
     /**
