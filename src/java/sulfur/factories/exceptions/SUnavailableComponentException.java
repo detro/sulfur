@@ -30,14 +30,14 @@ package sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino
  */
-public class SUnavailableDriverException extends RuntimeException {
+public class SUnavailableComponentException extends RuntimeException {
 
-    public SUnavailableDriverException(String driverName) {
-        super(driverName);
+    public SUnavailableComponentException(String componentName) {
+        super(componentName);
     }
 
     @Override
     public String getMessage() {
-        return String.format("The requested Driver is not available '%s'", super.getMessage());
+        return String.format("The requested SPageComponent is not available '%s' (check your configuration)", super.getMessage());
     }
 }

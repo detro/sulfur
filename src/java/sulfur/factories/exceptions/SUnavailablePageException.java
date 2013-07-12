@@ -38,6 +38,6 @@ public class SUnavailablePageException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("The requested SPage is not currently available '%s'", super.getMessage());
+        return String.format("The requested SPage is not available '%s'", super.getMessage());
     }
 }

@@ -36,6 +36,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import sulfur.factories.SPageComponentFactory;
 import sulfur.factories.SPageConfig;
+import sulfur.factories.exceptions.SUnavailableComponentException;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -255,9 +256,13 @@ public class SPage {
      * Get SPageComponent from the SPage
      *
      * @param componentName Name of the Component we are interested in
-     * @return The SPageComponent we are after, or "null" if not found
+     * @return The SPageComponent we are after
      */
     public SPageComponent getComponent(String componentName) {
+        SPageComponent component = mPageComponents.get(componentName);
+        if (null == component) {
+            throw new SUnavailableComponentException(componentName);
+        }
         return mPageComponents.get(componentName);
     }
 
