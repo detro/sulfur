@@ -27,12 +27,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur;
 
-import org.openqa.selenium.WebDriver;
-
 /**
  * @author Ivan De Marino
  *
- * TODO
+ * An SPageComponent (or just "Component") is a logical representation of something present/composing a Page (SPage).
+ * In other context you might see this referred as "Widget" or "a DIV".
+ * But because of the abstract interface, it can even be something non-graphical like a JavaScript library/object.
  */
 public abstract class SPageComponent {
 
@@ -42,15 +42,35 @@ public abstract class SPageComponent {
         mContainingPage = containingPage;
     }
 
-    protected WebDriver getDriver() {
-        return mContainingPage.getDriver();
+    /**
+     * @return The SPage object in which this SPageComponent is located.
+     */
+    protected SPage getContainingPage() {
+        return mContainingPage;
     }
 
+    /**
+     * @return Component Name. Useful for debugging.
+     */
     abstract public String getName();
 
+    /**
+     * Returns "true" if the Component on the page has loaded.
+     * How a component can be considered loaded it's up to the specific component implementation.
+     *
+     * @return "true" if the Component on the page has loaded.
+     */
     abstract public boolean isLoaded();
 
+    /**
+     * Returns "true" if the Component is visible on the page.
+     * How a component can be considered visible it's up to the specific component implementation.
+     * @return "true" if the Component is visible on the page.
+     */
     abstract public boolean isVisible();
 
+    /**
+     * @return HTML Source code of the component (i.e. the DOM subtree as String, if any)
+     */
     abstract public String getSource();
 }
