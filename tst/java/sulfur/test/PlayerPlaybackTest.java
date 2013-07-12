@@ -43,13 +43,17 @@ public class PlayerPlaybackTest extends SBaseTest {
         // Wait 5 seconds for the Page to load
         p.waitForLoad(5, TimeUnit.SECONDS);
 
+        // grab Player component and do some sanity checks
         Player player = (Player) p.getComponent("Player");
         assertTrue(player.isVisible());
         assertFalse(player.isAlertsContainerVisible());
-        assertFalse(player.isPlaybackContainerVisible());
+        assertFalse(player.isPlaybackContainerVisible());   //< NOTICE: Playback container not-visible initially
 
+        // grab PlayerSoloModeButtons component
         PlayerSoloModeButtons playerButtons = (PlayerSoloModeButtons) p.getComponent("PlayerSoloModeButtons");
         assertTrue(playerButtons.isVisible());
+
+        // Check that, clicking on the Show/Hide Toggle, the Player's Playback Container becomes visible
         playerButtons.toggleShowHide.click();
         assertTrue(player.isPlaybackContainerVisible());
     }
