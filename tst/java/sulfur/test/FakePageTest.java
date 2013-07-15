@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.test;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
@@ -42,7 +43,8 @@ import java.util.Map;
  */
 public class FakePageTest extends SBaseTest {
 
-    public FakePageTest() {
+    @BeforeClass
+    public void setSystemProps() {
         SPageConfigFactory.clearInstance();
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");

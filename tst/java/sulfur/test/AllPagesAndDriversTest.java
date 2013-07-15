@@ -27,10 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.test;
 
-import sulfur.SBaseTest;
-import sulfur.SPage;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import sulfur.SBaseTest;
+import sulfur.SPage;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
 
@@ -45,7 +46,8 @@ import static org.testng.Assert.assertTrue;
  */
 public class AllPagesAndDriversTest extends SBaseTest {
 
-    public AllPagesAndDriversTest() {
+    @BeforeClass
+    public void setSystemProps() {
         SPageConfigFactory.clearInstance();
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");

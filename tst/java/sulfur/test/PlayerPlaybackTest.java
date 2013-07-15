@@ -1,11 +1,11 @@
 package sulfur.test;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
-import sulfur.factories.exceptions.SUnavailableComponentException;
 import sulfur.test.components.Player;
 import sulfur.test.components.PlayerSoloModeButtons;
 
@@ -21,7 +21,8 @@ import static org.testng.Assert.assertTrue;
  */
 public class PlayerPlaybackTest extends SBaseTest {
 
-    public PlayerPlaybackTest() {
+    @BeforeClass
+    public void setSystemProps() {
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
         System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }

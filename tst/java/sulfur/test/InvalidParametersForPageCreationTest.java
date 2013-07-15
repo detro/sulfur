@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.test;
 
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
 import sulfur.factories.SPageConfigFactory;
@@ -35,7 +37,6 @@ import sulfur.factories.exceptions.SMissingPathParamException;
 import sulfur.factories.exceptions.SMissingQueryParamException;
 import sulfur.factories.exceptions.SUnavailableDriverException;
 import sulfur.factories.exceptions.SUnavailablePageException;
-import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
@@ -46,7 +47,8 @@ import java.util.HashMap;
  */
 public class InvalidParametersForPageCreationTest extends SBaseTest {
 
-    public InvalidParametersForPageCreationTest() {
+    @BeforeClass
+    public void setSystemProps() {
         SPageConfigFactory.clearInstance();
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
