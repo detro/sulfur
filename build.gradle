@@ -35,12 +35,18 @@ repositories {
     mavenCentral()
 }
 
-ext.seleniumVersion = "2.33.0"
-ext.testngVersion = "6.8.5"
-ext.phantomjsdriverVersion = "1.0.3"
-ext.log4jVersion = "1.2.17"
-ext.gsonVersion = "2.2.4"
-ext.guavaVersion = "14.0.1"
+project.ext {
+    projectLongName         = "Sulfur"
+    projectArtefactDir      = "jars/"
+    projectCreator          = "Ivan De Marino (https://github.com/detro)"
+
+    seleniumVersion         = "2.33.0"
+    testngVersion           = "6.8.5"
+    phantomjsdriverVersion  = "1.0.3"
+    log4jVersion            = "1.2.17"
+    gsonVersion             = "2.2.4"
+    guavaVersion            = "14.0.1"
+}
 
 dependencies {
     compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
@@ -90,6 +96,98 @@ test {
     beforeTest { descriptor ->
         logger.lifecycle("Running " + descriptor)
     }
+}
+
+// Collect Build Information
+task buildInfo {
+    def cmdOutput = "git describe --tags --match [0-9]*-release".execute().text
+
+    ext.buildVersion = cmdOutput.toString().trim().replaceAll("-release", "")
+    ext.buildVersionMajor = buildVersion.replaceAll("^(\\d+).*\$", "\$1")
+    ext.buildVersionMinor = buildVersion.replaceAll("^\\d+\\.(\\d+).*\$", "\$1")
+    ext.buildVersionRev = buildVersion.replaceAll("^\\d+\\.\\d+\\.(\\d+).*\$", "\$1")
+    ext.buildTimestamp = (int)(new Date().getTime()/1000)
+
+    // println("* Version: " + ext.buildVersion)
+    // println("** Major: " + ext.buildVersionMajor)
+    // println("** Minor: " + ext.buildVersionMinor)
+    // println("** Revision: " + ext.buildVersionRev)
+}
+
+// JAR
+jar {
+    dependsOn buildInfo
+
+    // destination directory for the jar
+    destinationDir = file(projectArtefactDir)
+
+    // get the version
+    version = buildInfo.buildVersion
+
+    // include dependencies into jar
+    //def classpath  = configurations.runtime.collect { it.directory ? it : zipTree(it) }
+    //from (classpath) {
+    //    exclude 'META-INF/**'
+    //}
+
+    // manifest definition
+    manifest {
+        attributes(
+            "Implementation-Title"      : projectLongName,
+            "Implementation-Version"    : buildInfo.buildVersion,
+            "Gradle-Version"            : project.gradle.gradleVersion,
+            "Created-By"                : projectCreator
+        )
+    }
+}
+
+// SOURCE JAR
+task sourceJarBuild(type: Jar, dependsOn: [classes, buildInfo]) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+
+    // destination directory for the jar
+    destinationDir      = file(projectArtefactDir)
+
+    // get the version
+    version = buildInfo.buildVersion
+
+    // manifest definition
+    manifest {
+        attributes(
+            "Implementation-Title"      : projectLongName,
+            "Implementation-Version"    : buildInfo.buildVersion,
+            "Gradle-Version"            : project.gradle.gradleVersion,
+            "Created-By"                : projectCreator
+        )
+    }
+}
+
+// JAVADOC JAR
+task javadocJarBuild(type: Jar, dependsOn: [javadoc, buildInfo]) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+
+    // destination directory for the jar
+    destinationDir      = file(projectArtefactDir)
+
+    // get the version
+    version = buildInfo.buildVersion
+
+    // manifest definition
+    manifest {
+        attributes(
+            "Implementation-Title"      : projectLongName,
+            "Implementation-Version"    : buildInfo.buildVersion,
+            "Gradle-Version"            : project.gradle.gradleVersion,
+            "Created-By"                : projectCreator
+        )
+    }
+}
+
+// ALL JARS
+task jars {
+    dependsOn jar, sourceJarBuild, javadocJarBuild
 }
 
 task wrapper(type: Wrapper) {
