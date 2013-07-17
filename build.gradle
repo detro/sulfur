@@ -190,6 +190,12 @@ task jars {
     dependsOn jar, sourceJarBuild, javadocJarBuild
 }
 
+// Store JavaDoc
+task storeJavadoc(type: Sync, dependsOn: javadoc) {
+    from project.docsDir
+    into "docs"
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = "1.6"
     jarFile = "gradle/gradle-wrapper.jar"
