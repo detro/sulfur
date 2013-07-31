@@ -29,13 +29,11 @@ package sulfur.factories;
 
 import sulfur.SPage;
 import sulfur.factories.exceptions.*;
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -53,36 +51,21 @@ public class SPageFactory {
     /** Logger */
     private static final Logger LOG = Logger.getLogger(SPageFactory.class);
 
-    /** MANDATORY System Property to instruct Sulfur where to look for the Config file */
-    public static final String SYSPROP_CONFIG_FILE_PATH = "sulfur.config";
-
     private final SConfig mConfig;
     private final SPageConfigFactory mPageConfigFactory;
 
     private static SPageFactory singleton = null;
 
     private SPageFactory() {
-        // Read configuration file location
-        String configFilePath = System.getProperty(SYSPROP_CONFIG_FILE_PATH);
-        if (null == configFilePath) {
-            throw new SConfigNotProvidedException();
-        }
-
-        // Parse configuration file
-        Gson gson = new Gson();
+        // Read Sulfur Config file
         try {
-            FileReader configFileReader = new FileReader(configFilePath);
-            mConfig = gson.fromJson(configFileReader, SConfig.class);
-
-            // Logging
-            LOG.debug("FOUND Sulfur Config file: " + configFilePath);
-            mConfig.logDebug(LOG);
+            mConfig = SConfig.getConfig();
         } catch (FileNotFoundException fnfe) {
             LOG.error("INVALID Config (not found)");
-            throw new SInvalidConfigException(configFilePath);
+            throw new SInvalidConfigException(fnfe.getMessage());
         } catch (JsonSyntaxException jse) {
             LOG.error("INVALID Config (malformed)");
-            throw new SInvalidConfigException(configFilePath, jse);
+            throw new SInvalidConfigException(jse.getMessage(), jse);
         }
 
         // Fetch a SPageConfigFactory
@@ -147,7 +130,7 @@ public class SPageFactory {
         String urlQuery = pageConfig.composeUrlQuery(queryParams);
 
         // Create the requested driver
-        WebDriver driver = SWebDriverFactory.createDriver(driverName);
+        WebDriver driver = SWebDriverFactory.getInstance().createDriver(driverName);
 
         // Create the destination URL
         String initialUrl;
