@@ -1,0 +1,10 @@
+{
+    "protocol"  : "http",
+    "host"      : "www.amazon.com",
+    "port"      : 80,
+    "drivers"   : [
+        "firefox",
+        "chrome"
+    ],
+    "seleniumhub" : "http://localhost:4444/wd/hub"
+}

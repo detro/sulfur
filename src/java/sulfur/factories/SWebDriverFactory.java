@@ -27,13 +27,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories;
 
-import sulfur.factories.exceptions.SInvalidDriverNameException;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import sulfur.factories.exceptions.SInvalidConfigException;
+import sulfur.factories.exceptions.SInvalidDriverNameException;
+
+import java.io.FileNotFoundException;
 
 /**
  * @author Ivan De Marino - detronizator@gmail.com
@@ -41,55 +47,120 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * TODO
  */
 public class SWebDriverFactory {
+    private static final Logger LOG = Logger.getLogger(SWebDriverFactory.class);
 
-    public static final String DRIVERNAME_FIREFOX = "firefox";
-    public static final String DRIVERNAME_CHROME = "chrome";
-    public static final String DRIVERNAME_IE = "ie";
-    public static final String DRIVERNAME_PHANTOMJS = "phantomjs";
-    public static final String DRIVERNAME_OPERA = "opera";
+    public static final String DRIVERNAME_FIREFOX = BrowserType.FIREFOX;
+    public static final String DRIVERNAME_CHROME = BrowserType.CHROME;
+    public static final String DRIVERNAME_IE = BrowserType.IE;
+    public static final String DRIVERNAME_PHANTOMJS = BrowserType.PHANTOMJS;
+    public static final String DRIVERNAME_OPERA = BrowserType.OPERA;
 
-    private SWebDriverFactory() {
-        // This class can't be instantiated
+    private static SWebDriverFactory singleton = null;
+
+    private final SConfig mSulfurConfig;
+
+    private SWebDriverFactory(SConfig sulfurConfig) {
+        mSulfurConfig = sulfurConfig;
     }
 
-    public static WebDriver createDriver(String driverName) {
-        switch(driverName) {
-            case DRIVERNAME_FIREFOX:
-                return createFirefoxDriver();
-            case DRIVERNAME_CHROME:
-                return createChromeDriver();
-            case DRIVERNAME_IE:
-                return createIEDriver();
-            case DRIVERNAME_PHANTOMJS:
-                return createPhantomJSDriver();
-            case DRIVERNAME_OPERA:
-                return createOperaDriver();
-            default:
-                throw new SInvalidDriverNameException(driverName);
+    /**
+     * Factory Method
+     *
+     * @return The SWebDriverFactory
+     */
+    public synchronized static SWebDriverFactory getInstance() {
+        if (null == singleton) {
+            try {
+                singleton = new SWebDriverFactory(SConfig.getConfig());
+            } catch (FileNotFoundException fnfe) {
+                LOG.error("INVALID Config (not found)");
+                throw new SInvalidConfigException(fnfe.getMessage());
+            }
+        }
+
+        return singleton;
+    }
+
+    /**
+     * Utility method to get rid of the SWebDriverFactory Singleton Instance.
+     * NOTE: Make sure you know what you are doing when using this.
+     */
+    public synchronized static void clearInstance() {
+        singleton = null;
+    }
+
+    public WebDriver createDriver(String driverName) {
+        LOG.debug("Creating Driver: " + driverName);
+
+        // Either we ask a Selenium HUB for the Driver or we run it locally
+        if (null != mSulfurConfig.getSeleniumHub()) {
+            LOG.debug(String.format("Driver will be requested to Selenium HUB at '%s'",
+                    mSulfurConfig.getSeleniumHub().toString()));
+
+            // Figure out which capability to use
+            DesiredCapabilities caps;
+            switch(driverName) {
+                case DRIVERNAME_FIREFOX:
+                    caps = DesiredCapabilities.firefox();
+                    break;
+                case DRIVERNAME_CHROME:
+                    caps = DesiredCapabilities.chrome();
+                    break;
+                case DRIVERNAME_IE:
+                    caps = DesiredCapabilities.internetExplorer();
+                    break;
+                case DRIVERNAME_PHANTOMJS:
+                    caps = DesiredCapabilities.phantomjs();
+                    break;
+                case DRIVERNAME_OPERA:
+                    caps = DesiredCapabilities.opera();
+                    break;
+                default:
+                    caps = new DesiredCapabilities();
+                    break;
+            }
+
+            return new RemoteWebDriver(mSulfurConfig.getSeleniumHub(), caps);
+        } else {
+            // Figure out which browser to use
+            switch(driverName) {
+                case DRIVERNAME_FIREFOX:
+                    return createFirefoxDriver();
+                case DRIVERNAME_CHROME:
+                    return createChromeDriver();
+                case DRIVERNAME_IE:
+                    return createIEDriver();
+                case DRIVERNAME_PHANTOMJS:
+                    return createPhantomJSDriver();
+                case DRIVERNAME_OPERA:
+                    return createOperaDriver();
+                default:
+                    throw new SInvalidDriverNameException(driverName);
+            }
         }
     }
 
-    public static WebDriver createFirefoxDriver() {
+    public WebDriver createFirefoxDriver() {
         // TODO - too basic at the moment
-        return new FirefoxDriver();
+        return new FirefoxDriver(DesiredCapabilities.firefox());
     }
 
-    public static WebDriver createChromeDriver() {
+    public WebDriver createChromeDriver() {
         // TODO - too basic at the moment
-        return new ChromeDriver();
+        return new ChromeDriver(DesiredCapabilities.chrome());
     }
 
-    public static WebDriver createIEDriver() {
+    public WebDriver createIEDriver() {
         // TODO - too basic at the moment
-        return new InternetExplorerDriver();
+        return new InternetExplorerDriver(DesiredCapabilities.internetExplorer());
     }
 
-    public static WebDriver createOperaDriver() {
+    public WebDriver createOperaDriver() {
         // TODO
         return null;
     }
 
-    public static WebDriver createPhantomJSDriver() {
+    public WebDriver createPhantomJSDriver() {
         // TODO - too basic at the moment
         return new PhantomJSDriver(DesiredCapabilities.phantomjs());
     }
