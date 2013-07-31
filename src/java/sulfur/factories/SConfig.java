@@ -27,8 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
+import sulfur.factories.exceptions.SConfigNotProvidedException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashSet;
@@ -48,6 +53,11 @@ import java.util.Set;
  * TODO
  */
 public class SConfig {
+    private static final Logger LOG = Logger.getLogger(SConfig.class);
+
+    /** MANDATORY System Property to instruct Sulfur where to look for the Config file */
+    public static final String SYSPROP_CONFIG_FILE_PATH = "sulfur.config";
+
     // JSON
     private String                  protocol = null;
     private String                  host = null;
@@ -93,5 +103,29 @@ public class SConfig {
         logger.debug("  port: " + getPort());
         logger.debug("  driver: " + getDrivers());
         logger.debug("  seleniumhub: " + getSeleniumHub());
+    }
+
+    /**
+     * Utility method to read the Sulfur Config from Filesystem, based on the System Property SYSPROP_CONFIG_FILE_PATH.
+     * It's essentially a Factory Method.
+     *
+     * @return the SConfig object
+     * @throws FileNotFoundException
+     * @throws JsonSyntaxException
+     */
+    public static SConfig getConfig() throws FileNotFoundException, JsonSyntaxException {
+        // Read configuration file location
+        String configFilePath = System.getProperty(SYSPROP_CONFIG_FILE_PATH);
+        if (null == configFilePath) {
+            throw new SConfigNotProvidedException();
+        }
+
+        // Parse configuration file
+        Gson gson = new Gson();
+        FileReader configFileReader = new FileReader(configFilePath);
+        SConfig newSulfurConfig = gson.fromJson(configFileReader, SConfig.class);
+
+        LOG.debug("FOUND Sulfur Config file: " + configFilePath);
+        return newSulfurConfig;
     }
 }
