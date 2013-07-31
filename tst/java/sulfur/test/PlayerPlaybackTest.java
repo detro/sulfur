@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
+import sulfur.factories.SConfig;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
 import sulfur.test.components.Player;
@@ -24,7 +25,7 @@ public class PlayerPlaybackTest extends SBaseTest {
     @BeforeClass
     public void setSystemProps() {
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
 //    @Test(dataProvider = "driverProvider", expectedExceptions = SUnavailableComponentException.class)

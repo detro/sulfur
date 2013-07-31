@@ -32,6 +32,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
+import sulfur.factories.SConfig;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
 
@@ -51,7 +52,7 @@ public class AllPagesAndDriversTest extends SBaseTest {
         SPageConfigFactory.clearInstance();
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
     }
 
     @DataProvider(name = "allPagesByAllDrivers")

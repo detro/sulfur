@@ -27,11 +27,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.test.unit;
 
+import org.testng.annotations.Test;
+import sulfur.factories.SConfig;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.SPageFactory;
 import sulfur.factories.exceptions.SConfigNotProvidedException;
 import sulfur.factories.exceptions.SInvalidConfigException;
-import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
 
@@ -44,7 +45,7 @@ public class SPageFactoryTest {
     public void shouldBeAbleToGetPageFactory() {
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
         assertNotNull(SPageFactory.getInstance());
     }
 
@@ -52,7 +53,7 @@ public class SPageFactoryTest {
     public void shouldFailToGetPageFactoryIfRequiredSystemPropsAreMissing() {
         SPageFactory.clearInstance();
         System.clearProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH);
-        System.clearProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH);
+        System.clearProperty(SConfig.SYSPROP_CONFIG_FILE_PATH);
         assertNotNull(SPageFactory.getInstance());
     }
 
@@ -60,7 +61,7 @@ public class SPageFactoryTest {
     public void shouldFailToGetPageFactoryIfSystemPropToConfigFileIsMissing() {
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.clearProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH);
+        System.clearProperty(SConfig.SYSPROP_CONFIG_FILE_PATH);
         SPageFactory.getInstance();
     }
 
@@ -68,7 +69,7 @@ public class SPageFactoryTest {
     public void shouldFailToGetPageFactoryIfConfigFileDoesNotExist() {
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "imaginary/config/file");
+        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "imaginary/config/file");
         SPageFactory.getInstance();
     }
 
@@ -76,7 +77,7 @@ public class SPageFactoryTest {
     public void shouldFailToGetPageFactoryIfConfigFileIsMalformedJson() {
         SPageFactory.clearInstance();
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SPageFactory.SYSPROP_CONFIG_FILE_PATH, "/etc/hosts");
+        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "/etc/hosts");
         SPageFactory.getInstance();
     }
 }

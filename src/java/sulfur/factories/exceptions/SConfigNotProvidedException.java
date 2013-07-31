@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories.exceptions;
 
+import sulfur.factories.SConfig;
 import sulfur.factories.SPageFactory;
 
 /**
@@ -41,6 +42,6 @@ public class SConfigNotProvidedException extends RuntimeException {
     @Override
     public String getMessage() {
         return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
-                SPageFactory.SYSPROP_CONFIG_FILE_PATH);
+                SConfig.SYSPROP_CONFIG_FILE_PATH);
     }
 }
