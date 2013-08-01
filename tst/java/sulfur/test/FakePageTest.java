@@ -64,6 +64,6 @@ public class FakePageTest extends SBaseTest {
         queryParams.put("key2", "val2");
 
         // create the page: this should throw an exception
-        SPage p = SPageFactory.getInstance().createPage(driverName, "fakepage", pathParams, queryParams);
+        createOpenAndSelfDisposingPage(driverName, "fakepage", pathParams, queryParams);
     }
 }

@@ -123,14 +123,18 @@ public class SPage {
      * Open the Page.
      * It emulates the action of the User.
      * NOTE: An Opened page can't be reopened.
+     *
+     * @return The same SPage object: useful for call chains
      */
-    public void open() {
+    public SPage open() {
         if (!mOpened) {
             LOG.debug("SPage opening: " + mInitialUrl);
 
             mDriver.get(mInitialUrl);
         }
         mOpened = true;
+
+        return this;
     }
 
     /**

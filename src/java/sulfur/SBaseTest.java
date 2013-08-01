@@ -60,6 +60,25 @@ public class SBaseTest {
     }
 
     /**
+     * Factory method to create an SPage that is already .open() AND registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
+     * Use this method when you know you don't need to set anything extra on the page before "opening" it.
+     *
+     * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
+     * @param pageName Name of the SPage you need
+     * @param pathParams Map of Path Parameters to use
+     * @param queryParams Map of Query Parameters to use
+     * @return Newly creates SPage, already open and registered for disposal
+     */
+    protected SPage createOpenAndSelfDisposingPage(String driverName,
+                                            String pageName,
+                                            Map<String, String> pathParams,
+                                            Map<String, String> queryParams) {
+        return disposeAfterTestMethod(
+                SPageFactory.getInstance().createPage(
+                        driverName, pageName, pathParams, queryParams)).open();
+    }
+
+    /**
      * @DataProvider of all the Pages found by the SPageConfigFactory.
      * Name of the @DataProvider is "pageProvider"
      *
