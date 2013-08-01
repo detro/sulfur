@@ -66,7 +66,7 @@ public class SBaseTest {
      * @return @DataProvider bi-dimensional array with list of all Pages for which a SPageConfig was found
      */
     @DataProvider(name = "pageProvider")
-    public Object[][] provideConfiguredPages() {
+    protected Object[][] provideConfiguredPages() {
         SPageFactory pageFactory = SPageFactory.getInstance();
         List<Object[]> pages = new ArrayList<Object[]>();
 
@@ -84,7 +84,7 @@ public class SBaseTest {
      * @return @DataProvider bi-dimensional array with list of Drivers to use for the test
      */
     @DataProvider(name = "driverProvider")
-    public Object[][] provideConfiguredDrivers() {
+    protected Object[][] provideConfiguredDrivers() {
         SPageFactory pageFactory = SPageFactory.getInstance();
         List<Object[]> drivers = new ArrayList<Object[]>();
 
@@ -102,7 +102,7 @@ public class SBaseTest {
      * @param providersData vararg of @DataProvider results
      * @return A @DataProvider iterator, ready to use
      */
-    public Iterator<Object[]> makeCartesianProvider(Object[][]...providersData) {
+    protected Iterator<Object[]> makeCartesianProvider(Object[][]...providersData) {
         return SDataProviderUtils.cartesianProvider(providersData);
     }
 
@@ -113,7 +113,7 @@ public class SBaseTest {
      * @param providersData List of @DataProvider results
      * @return A @DataProvider iterator, ready to use
      */
-    public Iterator<Object[]> makeCartesianProvider(List<Object[][]> providersData) {
+    protected Iterator<Object[]> makeCartesianProvider(List<Object[][]> providersData) {
         return SDataProviderUtils.cartesianProvider(providersData);
     }
 }
