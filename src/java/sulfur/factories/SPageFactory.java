@@ -135,7 +135,7 @@ public class SPageFactory {
         // Create the destination URL
         String initialUrl;
         try {
-            initialUrl = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + "?" + urlQuery).toString();
+            initialUrl = new URL(mConfig.getProtocol(), mConfig.getHost(), mConfig.getPort(), urlPath + urlQuery).toString();
         } catch (MalformedURLException mue) {
             LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageName), mue);
             throw new SFailedToCreatePageException(mue);

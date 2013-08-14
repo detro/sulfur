@@ -43,7 +43,7 @@ public class PlayerPlaybackTest extends SBaseTest {
         p.open();
 
         // Wait 5 seconds for the Page to load
-        p.waitForLoad(5, TimeUnit.SECONDS);
+        p.waitForLoad(10, TimeUnit.SECONDS);
 
         // grab Player component and do some sanity checks
         Player player = (Player) p.getComponent("Player");

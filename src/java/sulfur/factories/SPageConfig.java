@@ -215,6 +215,9 @@ public class SPageConfig {
 
         if (null != queryParams) {
             Iterator<Map.Entry<String, String>> i = queryParams.entrySet().iterator();
+            if (i.hasNext()) {
+                resultQuery.append("?");
+            }
             while (i.hasNext()) {
                 Map.Entry<String, String> queryParam = i.next();
 
