@@ -25,7 +25,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package sulfur.factories;
+package sulfur.configs;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -52,8 +52,8 @@ import java.util.Set;
  *
  * TODO
  */
-public class SConfig {
-    private static final Logger LOG = Logger.getLogger(SConfig.class);
+public class SEnvConfig {
+    private static final Logger LOG = Logger.getLogger(SEnvConfig.class);
 
     /** MANDATORY System Property to instruct Sulfur where to look for the Config file */
     public static final String SYSPROP_CONFIG_FILE_PATH = "sulfur.config";
@@ -109,11 +109,11 @@ public class SConfig {
      * Utility method to read the Sulfur Config from Filesystem, based on the System Property SYSPROP_CONFIG_FILE_PATH.
      * It's essentially a Factory Method.
      *
-     * @return the SConfig object
+     * @return the SEnvConfig object
      * @throws FileNotFoundException
      * @throws JsonSyntaxException
      */
-    public static SConfig getConfig() throws FileNotFoundException, JsonSyntaxException {
+    public static SEnvConfig getConfig() throws FileNotFoundException, JsonSyntaxException {
         // Read configuration file location
         String configFilePath = System.getProperty(SYSPROP_CONFIG_FILE_PATH);
         if (null == configFilePath) {
@@ -123,7 +123,7 @@ public class SConfig {
         // Parse configuration file
         Gson gson = new Gson();
         FileReader configFileReader = new FileReader(configFilePath);
-        SConfig newSulfurConfig = gson.fromJson(configFileReader, SConfig.class);
+        SEnvConfig newSulfurConfig = gson.fromJson(configFileReader, SEnvConfig.class);
 
         LOG.debug("FOUND Sulfur Config file: " + configFilePath);
         return newSulfurConfig;

@@ -30,16 +30,16 @@ package sulfur.factories.exceptions;
 /**
  * @author Ivan De Marino
  */
-public class SInvalidPageConfigException extends RuntimeException {
+public class SInvalidEnvConfigException extends RuntimeException {
 
-    public SInvalidPageConfigException(String invalidPageConfigPath) {
-        super(invalidPageConfigPath);
+    public SInvalidEnvConfigException(String invalidEnvConfigPath) {
+        super(invalidEnvConfigPath);
     }
 
     @Override
     public String getMessage() {
-        return String.format("Malformed/Invalid Sulfur SPageConfig file '%s'\n" +
-                "NOTE: Check file format at TODO.\n",   // TODO
+        return String.format("Malformed/Invalid Sulfur SEnvConfig file '%s'\n" +
+                "NOTE: Check file format at TODO.\n", // TODO
                 super.getMessage());
     }
 }

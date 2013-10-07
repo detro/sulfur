@@ -1,0 +1,11 @@
+{
+    "name"          : "detailspage",        //< non mandatory - default value is filename (without extension)
+    "components"    : [
+//        "sulfur.test.components.Player"
+//        "BuyBox"
+    ],
+    "path"          : "/gp/product/{!asin}/{ref}",
+    "queryParams"   : [
+        "key1", "!key2", "key3"
+    ]
+}

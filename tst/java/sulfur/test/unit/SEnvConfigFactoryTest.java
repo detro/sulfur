@@ -30,8 +30,12 @@ package sulfur.test.unit;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import sulfur.configs.SEnvConfig;
 import sulfur.configs.SPageConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
+import sulfur.factories.exceptions.SEnvConfigsLocationNotProvidedException;
+import sulfur.factories.exceptions.SInvalidEnvConfigsLocationException;
 import sulfur.factories.exceptions.SInvalidPageConfigsLocationException;
 import sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException;
 
@@ -44,60 +48,59 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Ivan De Marino
  */
-public class SPageConfigFactoryTest {
+public class SEnvConfigFactoryTest {
 
     @BeforeMethod
-    public void clearPageConfigFactoryInstance() {
-        SPageConfigFactory.clearInstance();
+    public void clearEnvConfigFactoryInstance() {
+        SEnvConfigFactory.clearInstance();
     }
 
     @Test
-    public void shouldGrabInstanceOfPageConfigFactory() {
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
-        assertNotNull(SPageConfigFactory.getInstance());
+    public void shouldGrabInstanceOfEnvConfigFactory() {
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
+        assertNotNull(SEnvConfigFactory.getInstance());
     }
 
-    @Test(expectedExceptions = SPageConfigsLocationNotProvidedException.class)
-    public void shouldFailToGrabInstanceOfPageConfigFactoryIfPathToPageConfigDirIsInvalid() {
-        System.clearProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH);
-        SPageConfigFactory.getInstance();
+    @Test(expectedExceptions = SEnvConfigsLocationNotProvidedException.class)
+    public void shouldFailToGrabInstanceOfEnvConfigFactoryIfPathToPageConfigDirIsInvalid() {
+        System.clearProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH);
+        SEnvConfigFactory.getInstance();
     }
 
-    @Test(expectedExceptions = SInvalidPageConfigsLocationException.class)
-    public void shouldFailToGrabInstanceOfPageConfigFactoryIfPageConfigDirIsEmpty() {
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst");
-        SPageConfigFactory.getInstance();
+    @Test(expectedExceptions = SInvalidEnvConfigsLocationException.class)
+    public void shouldFailToGrabInstanceOfEnvConfigFactoryIfPageConfigDirIsEmpty() {
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst");
+        SEnvConfigFactory.getInstance();
     }
 
     @Test
-    public void shouldFindPageConfigs() {
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
-        SPageConfigFactory pageConfigFactory = SPageConfigFactory.getInstance();
+    public void shouldFindEnvConfigs() {
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
+        SEnvConfigFactory envConfigFactory = SEnvConfigFactory.getInstance();
 
-        Map<String, SPageConfig> pageConfigs = pageConfigFactory.getPageConfigs();
-        for (Map.Entry<String, SPageConfig> p : pageConfigs.entrySet()) {
+        Map<String, SEnvConfig> envConfigs = envConfigFactory.getEnvConfigs();
+        for (Map.Entry<String, SEnvConfig> p : envConfigs.entrySet()) {
             assertEquals(p.getKey(), p.getValue().getName());
-            System.out.println(String.format("SPageConfig => name: %s - filename: %s",
+            System.out.println(String.format("SEnvConfig => name: %s - filename: %s",
                     p.getValue().getName(),
                     p.getValue().getFilename()));
         }
     }
 
-    @DataProvider(name = "provideCurrentTestPageConfigs")
-    public Object[][] provideCurrentTestPageConfigs() {
+    @DataProvider(name = "provideCurrentTestEnvConfigs")
+    public Object[][] provideCurrentTestEnvConfigs() {
         return new Object[][] {
-                { "detailspage" },
-                { "fakepage" },
-                { "playersolomode" }
+                { "prod" },
+                { "pre-prod" }
         };
     }
 
-    @Test(dataProvider = "provideCurrentTestPageConfigs")
-    public void shouldFindTheExpectedPageConfig(String pageConfigName) {
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
-        SPageConfigFactory pageConfigFactory = SPageConfigFactory.getInstance();
+    @Test(dataProvider = "provideCurrentTestEnvConfigs")
+    public void shouldFindTheExpectedEnvConfig(String envConfigName) {
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
+        SEnvConfigFactory envConfigFactory = SEnvConfigFactory.getInstance();
 
-        assertNotNull(pageConfigFactory.getPageConfig(pageConfigName));
-        assertTrue(pageConfigFactory.getPageConfig(pageConfigName).getName().equals(pageConfigName));
+        assertNotNull(envConfigFactory.getEnvConfig(envConfigName));
+        assertTrue(envConfigFactory.getEnvConfig(envConfigName).getName().equals(envConfigName));
     }
 }

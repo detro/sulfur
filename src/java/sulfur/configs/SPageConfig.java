@@ -25,8 +25,9 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package sulfur.factories;
+package sulfur.configs;
 
+import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.exceptions.SMissingPathParamException;
 import sulfur.factories.exceptions.SMissingQueryParamException;
 import org.apache.log4j.Logger;

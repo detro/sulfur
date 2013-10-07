@@ -27,19 +27,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories.exceptions;
 
+import sulfur.factories.SEnvConfigFactory;
+
 /**
  * @author Ivan De Marino
  */
-public class SInvalidPageConfigException extends RuntimeException {
+public class SInvalidEnvConfigsLocationException extends RuntimeException {
 
-    public SInvalidPageConfigException(String invalidPageConfigPath) {
-        super(invalidPageConfigPath);
+    public SInvalidEnvConfigsLocationException() {
+        super();
     }
 
     @Override
     public String getMessage() {
-        return String.format("Malformed/Invalid Sulfur SPageConfig file '%s'\n" +
-                "NOTE: Check file format at TODO.\n",   // TODO
-                super.getMessage());
+        return String.format("NOTE: Value of System Property '%s' is invalid (non-existent/empty directory?).\n",
+                SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH);
     }
 }

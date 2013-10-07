@@ -27,21 +27,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories.exceptions;
 
-import sulfur.factories.SConfig;
-import sulfur.factories.SPageFactory;
+import sulfur.factories.SEnvConfigFactory;
 
 /**
  * @author Ivan De Marino
  */
-public class SConfigNotProvidedException extends RuntimeException {
+public class SEnvConfigsLocationNotProvidedException extends RuntimeException {
 
-    public SConfigNotProvidedException() {
+    public SEnvConfigsLocationNotProvidedException() {
         super();
     }
 
     @Override
     public String getMessage() {
         return String.format("NOTE: It's MANDATORY to set the System Property '%s'.\n",
-                SConfig.SYSPROP_CONFIG_FILE_PATH);
+                SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH);
     }
 }
