@@ -27,10 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.configs;
 
+import org.apache.log4j.Logger;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.factories.exceptions.SMissingPathParamException;
 import sulfur.factories.exceptions.SMissingQueryParamException;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 import java.util.regex.Matcher;

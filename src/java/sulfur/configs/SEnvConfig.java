@@ -27,13 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.configs;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
-import sulfur.factories.exceptions.SConfigNotProvidedException;
+import sulfur.factories.SEnvConfigFactory;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashSet;
@@ -53,17 +49,20 @@ import java.util.Set;
  * TODO
  */
 public class SEnvConfig {
-    private static final Logger LOG = Logger.getLogger(SEnvConfig.class);
-
-    /** MANDATORY System Property to instruct Sulfur where to look for the Config file */
-    public static final String SYSPROP_CONFIG_FILE_PATH = "sulfur.config";
-
     // JSON
+    private String                  name = null;
     private String                  protocol = null;
     private String                  host = null;
     private int                     port = 80;
     private LinkedHashSet<String>   drivers = null; //< makes "drivers" lookup fast
     private String                  seleniumhub = null;
+
+    // Derived
+    private transient String        filename = null;
+
+    public String getName() {
+        return null == name ? filename.replace(SEnvConfigFactory.EXTENSION_ENV_CONFIG_FILE, "") : name;
+    }
 
     public String getProtocol() {
         return protocol;
@@ -97,35 +96,21 @@ public class SEnvConfig {
         return null;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     public void logDebug(Logger logger) {
+        logger.debug("  filename: " + getFilename());
+        logger.debug("  name: " + getName());
         logger.debug("  protocol: " + getProtocol());
         logger.debug("  host: " + getHost());
         logger.debug("  port: " + getPort());
         logger.debug("  driver: " + getDrivers());
         logger.debug("  seleniumhub: " + getSeleniumHub());
-    }
-
-    /**
-     * Utility method to read the Sulfur Config from Filesystem, based on the System Property SYSPROP_CONFIG_FILE_PATH.
-     * It's essentially a Factory Method.
-     *
-     * @return the SEnvConfig object
-     * @throws FileNotFoundException
-     * @throws JsonSyntaxException
-     */
-    public static SEnvConfig getConfig() throws FileNotFoundException, JsonSyntaxException {
-        // Read configuration file location
-        String configFilePath = System.getProperty(SYSPROP_CONFIG_FILE_PATH);
-        if (null == configFilePath) {
-            throw new SConfigNotProvidedException();
-        }
-
-        // Parse configuration file
-        Gson gson = new Gson();
-        FileReader configFileReader = new FileReader(configFilePath);
-        SEnvConfig newSulfurConfig = gson.fromJson(configFileReader, SEnvConfig.class);
-
-        LOG.debug("FOUND Sulfur Config file: " + configFilePath);
-        return newSulfurConfig;
     }
 }
