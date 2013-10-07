@@ -34,10 +34,16 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import sulfur.configs.SEnvConfig;
 import sulfur.factories.SPageComponentFactory;
-import sulfur.factories.SPageConfig;
+import sulfur.configs.SPageConfig;
+import sulfur.factories.SWebDriverFactory;
+import sulfur.factories.exceptions.SFailedToCreatePageException;
 import sulfur.factories.exceptions.SUnavailableComponentException;
+import sulfur.factories.exceptions.SUnavailableDriverException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -103,16 +109,55 @@ public class SPage {
 
     /**
      * Construct a Page Object, not yet opened.
-     * @param driver WebDriver instance, initialised and ready to use
-     * @param initialUrl URL that will be used on SPage#open()
-     * @param config SPageConfig to use for this SPage
+     * It validates the input parameters, checking if the requested driver exists, if the page exists and the
+     * mandatory path and query parameters are all provided.
+     *
+     * NOTE: The returned SPage hasn't loaded yet, so the User can still operate on it before the initial HTTP GET.
+     *
+     * @param envConfig Sulfur Environment Configuration
+     * @param driverName Desired WebDriver Name 
+     * @param pageConfig Sulfur Page Configuration
+     * @param pathParams Map of parameters that will be set in the SPage URL Path (@see SPageConfig)
+     * @param queryParams Map of parameters that will be set in the SPage URL Query (@see SPageConfig)
      */
-    public SPage(WebDriver driver, String initialUrl, SPageConfig config) {
-        mDriver = driver;
+    public SPage(SEnvConfig envConfig,
+                 String driverName,
+                 SPageConfig pageConfig,
+                 Map<String, String> pathParams,
+                 Map<String, String> queryParams) {
+        // New Page, not yet "opened"
         mOpened = false;
-        mInitialUrl = initialUrl;
-        mPageConfig = config;
-        mPageComponents = SPageComponentFactory.createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
+
+        // Validate Driver Name
+        if (!envConfig.getDrivers().contains(driverName)) {
+            LOG.fatal(String.format("FAILED to find WedDriver '%s'", driverName));
+            throw new SUnavailableDriverException(driverName);
+        }
+
+        // Compose URL Path & Query to the SPage
+        String urlPath = pageConfig.composeUrlPath(pathParams);
+        String urlQuery = pageConfig.composeUrlQuery(queryParams);
+
+        // Create the destination URL
+        try {
+            mInitialUrl = new URL(
+                    envConfig.getProtocol(),            //< protocol
+                    envConfig.getHost(),                //< host
+                    envConfig.getPort(),                //< port
+                    urlPath + urlQuery).toString();     //< path + query
+        } catch (MalformedURLException mue) {
+            LOG.fatal(String.format("FAILED to compose the URL to the Page '%s'", pageConfig.getName()), mue);
+            throw new SFailedToCreatePageException(mue);
+        }
+
+        // Create Page Components based on the configuration
+        mPageComponents = SPageComponentFactory.createPageComponentInstances(pageConfig.getComponentClassnames(), this);
+
+        // Store the Page Configuration
+        mPageConfig = pageConfig;
+
+        // Create the requested driver
+        mDriver = SWebDriverFactory.getInstance().createDriver(driverName);
     }
 
     public void setCookie(Cookie cookie) {
