@@ -27,12 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur.factories;
 
-import sulfur.factories.exceptions.SInvalidPageConfigException;
-import sulfur.factories.exceptions.SInvalidPageConfigsLocationException;
-import sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
+import sulfur.configs.SPageConfig;
+import sulfur.factories.exceptions.SInvalidPageConfigException;
+import sulfur.factories.exceptions.SInvalidPageConfigsLocationException;
+import sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +57,7 @@ public class SPageConfigFactory {
     /** MANDATORY System Property to instruct Sulfur where to look for SPage Configs files */
     public static final String SYSPROP_PAGE_CONFIGS_DIR_PATH    = "sulfur.page.configs";
     /** MANDATORY Extension that SPage Config files have to use */
-    public static final String EXTENSION_PAGE_CONFIG_FILE = ".sulfur.page.config.json";
+    public static final String EXTENSION_PAGE_CONFIG_FILE = ".sulfur.page.json";
 
     private static SPageConfigFactory singleton = null;
 
@@ -70,7 +71,6 @@ public class SPageConfigFactory {
      * @throws sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException
      */
     public synchronized static SPageConfigFactory getInstance() {
-
         if (null == singleton) {
             singleton = new SPageConfigFactory();
         }
@@ -87,9 +87,12 @@ public class SPageConfigFactory {
     }
 
     /**
-     * Creates a SPageConfigFactory, checking the given SPageConfigFactory#PAGE_CONFIGS_DIR_PATH.
+     * Creates a SPageConfigFactory, checking the given SPageConfigFactory#SYSPROP_PAGE_CONFIGS_DIR_PATH.
      *
-     * @throws sulfur.factories.exceptions.SPageConfigsLocationNotProvidedException
+     * @throws SPageConfigsLocationNotProvidedException
+     * @throws SInvalidPageConfigsLocationException
+     * @throws SInvalidPageConfigException
+     * @throws JsonSyntaxException
      */
     private SPageConfigFactory() {
         // Read path to SPageConfig Files directory

@@ -26,8 +26,8 @@ import java.util.Map;
  *
  * It assumes that:
  * <ol>
- *     <li>SEnvConfigFactory#SYSPROP_ENV_CONFIGS_DIR_PATH is set to a directory</li>
- *     <li>The directory contains Sulfur Environment Config Files (i.e. *.sulfur.env.json)</li>
+ *     <li>{@link SEnvConfigFactory#SYSPROP_ENV_CONFIGS_DIR_PATH} is set to a directory</li>
+ *     <li>The directory contains Sulfur Environment Config Files (i.e. <code>*.sulfur.env.json</code>)</li>
  * </ol>
  */
 public class SEnvConfigFactory {
