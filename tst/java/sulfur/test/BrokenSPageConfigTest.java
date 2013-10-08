@@ -28,34 +28,49 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sulfur.test;
 
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
-import sulfur.SPage;
-import sulfur.factories.SConfig;
+import sulfur.configs.SEnvConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
-import sulfur.factories.SPageFactory;
 import sulfur.factories.SWebDriverFactory;
 import sulfur.factories.exceptions.SFailedToCreatePageComponentException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Ivan De Marino
  */
-public class FakePageTest extends SBaseTest {
+public class BrokenSPageConfigTest extends SBaseTest {
 
     @BeforeClass
     public void setSystemProps() {
         SPageConfigFactory.clearInstance();
-        SPageFactory.clearInstance();
-        SWebDriverFactory.clearInstance();
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        SEnvConfigFactory.clearInstance();
+
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = SFailedToCreatePageComponentException.class)
-    public void shouldFailToLoadFakePageWithFakeComponents(String driverName) {
+    @DataProvider(name = "provideEnvAndDrivers")
+    protected Object[][] provideEnvAndDrivers() {
+        List<Object[]> result = new ArrayList<Object[]>();
+
+        for(SEnvConfig envConfig : SEnvConfigFactory.getInstance().getEnvConfigs().values()) {
+            for (String driverName : envConfig.getDrivers()) {
+                result.add(new Object[] { envConfig, driverName });
+            }
+        }
+
+        return result.toArray(new Object[result.size()][]);
+    }
+
+    @Test(dataProvider = "provideEnvAndDrivers", expectedExceptions = SFailedToCreatePageComponentException.class)
+    public void shouldFailToLoadFakePageWithFakeComponents(SEnvConfig envConfig, String driverName) {
         Map<String, String> pathParams = new HashMap<String, String>();
         pathParams.put("asin", "B00CV77WBU");
 
@@ -64,6 +79,6 @@ public class FakePageTest extends SBaseTest {
         queryParams.put("key2", "val2");
 
         // create the page: this should throw an exception
-        createOpenAndSelfDisposingPage(driverName, "fakepage", pathParams, queryParams);
+        createOpenAndSelfDisposingPage(envConfig.getName(), driverName, "fakepage", pathParams, queryParams);
     }
 }
