@@ -157,10 +157,16 @@ public class SPage {
         mPageConfig = pageConfig;
 
         // Create the requested driver
-        mDriver = SWebDriverFactory.getInstance().createDriver(driverName);
+        mDriver = new SWebDriverFactory(envConfig).createDriver(driverName);
     }
 
-    public void setCookie(Cookie cookie) {
+    /**
+     * Adds a Cookie to a Page.
+     * Usually this will be used when {@link sulfur.SPage#isOpen()} is still false.
+     *
+     * @param cookie Cookie to set on the Page
+     */
+    public void addCookie(Cookie cookie) {
         mDriver.manage().addCookie(cookie);
     }
 
