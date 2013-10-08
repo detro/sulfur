@@ -27,7 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur;
 
-import sulfur.factories.SPageFactory;
+import sulfur.configs.SEnvConfig;
+import sulfur.configs.SPageConfig;
+import sulfur.factories.SEnvConfigFactory;
+import sulfur.factories.SPageConfigFactory;
 import sulfur.utils.SDataProviderUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
@@ -37,7 +40,7 @@ import java.util.*;
 /**
  * @author Ivan De Marino
  */
-public class SBaseTest {
+abstract public class SBaseTest {
 
     private List<SPage> mPagesToDisposeAfterTest = new ArrayList<SPage>();
 
@@ -63,55 +66,90 @@ public class SBaseTest {
      * Factory method to create an SPage that is already .open() AND registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
      * Use this method when you know you don't need to set anything extra on the page before "opening" it.
      *
+     * @param envConfig Sulfur Environment Configuration
      * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
-     * @param pageName Name of the SPage you need
+     * @param pageConfig Page Configuration
      * @param pathParams Map of Path Parameters to use
      * @param queryParams Map of Query Parameters to use
-     * @return Newly creates SPage, already open and registered for disposal
+     * @return Newly created SPage, already open and registered for self disposal
      */
-    protected SPage createOpenAndSelfDisposingPage(String driverName,
-                                            String pageName,
-                                            Map<String, String> pathParams,
-                                            Map<String, String> queryParams) {
-        return disposeAfterTestMethod(
-                SPageFactory.getInstance().createPage(
-                        driverName, pageName, pathParams, queryParams)).open();
+    protected SPage createOpenAndSelfDisposingPage(SEnvConfig envConfig,
+                                                   String driverName,
+                                                   SPageConfig pageConfig,
+                                                   Map<String, String> pathParams,
+                                                   Map<String, String> queryParams) {
+        return disposeAfterTestMethod( new SPage(envConfig, driverName, pageConfig, pathParams, queryParams)).open();
     }
 
     /**
-     * @DataProvider of all the Pages found by the SPageConfigFactory.
-     * Name of the @DataProvider is "pageProvider"
+     * See {@link SBaseTest#createOpenAndSelfDisposingPage(sulfur.configs.SEnvConfig, String, sulfur.configs.SPageConfig, java.util.Map, java.util.Map)}.
      *
-     * @return @DataProvider bi-dimensional array with list of all Pages for which a SPageConfig was found
+     * @param envName
+     * @param driverName
+     * @param pageName
+     * @param pathParams
+     * @param queryParams
+     * @return Newly created SPage, already open and registered for self disposal
      */
-    @DataProvider(name = "pageProvider")
-    protected Object[][] provideConfiguredPages() {
-        SPageFactory pageFactory = SPageFactory.getInstance();
-        List<Object[]> pages = new ArrayList<Object[]>();
+    protected SPage createOpenAndSelfDisposingPage(String envName,
+                                                   String driverName,
+                                                   String pageName,
+                                                   Map<String, String> pathParams,
+                                                   Map<String, String> queryParams) {
+        SEnvConfig envConfig = SEnvConfigFactory.getInstance().getEnvConfig(envName);
+        SPageConfig pageConfig = SPageConfigFactory.getInstance().getPageConfig(pageName);
 
-        for (String configuredPageName : pageFactory.getAvailablePageConfigs()) {
-            pages.add(new Object[]{ configuredPageName });
-        }
-
-        return pages.toArray(new Object[pages.size()][]);
+        return createOpenAndSelfDisposingPage(envConfig, driverName, pageConfig, pathParams, queryParams);
     }
 
     /**
-     * @DataProvider of Drivers (based on Sulfur Configuration).
-     * Name of the @DataProvider is "driverProvider".
+     * DataProvider of all the Page Configs found by the SPageConfigFactory.
+     * Name of the DataProvider is "provideConfiguredPageConfigs"
      *
-     * @return @DataProvider bi-dimensional array with list of Drivers to use for the test
+     * @return DataProvider bi-dimensional array with list of all Page Configs (SPageConfig) that were found
      */
-    @DataProvider(name = "driverProvider")
-    protected Object[][] provideConfiguredDrivers() {
-        SPageFactory pageFactory = SPageFactory.getInstance();
-        List<Object[]> drivers = new ArrayList<Object[]>();
+    @DataProvider(name = "provideConfiguredPageConfigs")
+    protected Object[][] provideConfiguredPageConfigs() {
+        List<Object[]> pageConfigs = new ArrayList<Object[]>();
 
-        for (String configuredDriver : pageFactory.getConfig().getDrivers()) {
-            drivers.add(new Object[]{ configuredDriver });
+        for (SPageConfig pageConfig : SPageConfigFactory.getInstance().getPageConfigs().values()) {
+            pageConfigs.add(new Object[]{ pageConfig });
         }
 
-        return drivers.toArray(new Object[drivers.size()][]);
+        return pageConfigs.toArray(new Object[pageConfigs.size()][]);
+    }
+
+    /**
+     * DataProvider of all the Env Configs found by the SEnvConfigFactory.
+     * Name of the DataProvider is "provideConfiguredEnvConfigs"
+     *
+     * @return DataProvider bi-dimensional array with list of all Env Configs (SEnvConfigs) that were found
+     */
+    @DataProvider(name = "provideConfiguredEnvConfigs")
+    public Object[][] provideConfiguredEnvConfigs() {
+        List<Object[]> envConfigs = new ArrayList<Object[]>();
+
+        for (SEnvConfig envConfig : SEnvConfigFactory.getInstance().getEnvConfigs().values()) {
+            envConfigs.add(new Object[] { envConfig });
+        }
+
+        return envConfigs.toArray(new Object[envConfigs.size()][]);
+    }
+
+    /**
+     * Returns DataProvider-friendly dataset of Driver Names (based on Sulfur Configuration).
+     * It's ideal to be used to implement a DataProvider for a specific SEnvConfig.
+     *
+     * @return DataProvider bi-dimensional array with list of Drivers to use for the test
+     */
+    protected Object[][] provideDriverNamesByEnvConfig(SEnvConfig envConfig) {
+        List<Object[]> driverNames = new ArrayList<Object[]>();
+
+        for (String configuredDriverName : envConfig.getDrivers()) {
+            driverNames.add(new Object[]{configuredDriverName});
+        }
+
+        return driverNames.toArray(new Object[driverNames.size()][]);
     }
 
     /**
