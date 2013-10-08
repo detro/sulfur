@@ -108,8 +108,8 @@ abstract public class SBaseTest {
      *
      * @return DataProvider bi-dimensional array with list of all Page Configs (SPageConfig) that were found
      */
-    @DataProvider(name = "provideConfiguredPageConfigs")
-    protected Object[][] provideConfiguredPageConfigs() {
+    @DataProvider(name = "provideConfiguredPages")
+    protected Object[][] provideConfiguredPages() {
         List<Object[]> pageConfigs = new ArrayList<Object[]>();
 
         for (SPageConfig pageConfig : SPageConfigFactory.getInstance().getPageConfigs().values()) {
@@ -125,8 +125,8 @@ abstract public class SBaseTest {
      *
      * @return DataProvider bi-dimensional array with list of all Env Configs (SEnvConfigs) that were found
      */
-    @DataProvider(name = "provideConfiguredEnvConfigs")
-    public Object[][] provideConfiguredEnvConfigs() {
+    @DataProvider(name = "provideConfiguredEnvs")
+    public Object[][] provideConfiguredEnvs() {
         List<Object[]> envConfigs = new ArrayList<Object[]>();
 
         for (SEnvConfig envConfig : SEnvConfigFactory.getInstance().getEnvConfigs().values()) {
@@ -142,14 +142,27 @@ abstract public class SBaseTest {
      *
      * @return DataProvider bi-dimensional array with list of Drivers to use for the test
      */
-    protected Object[][] provideDriverNamesByEnvConfig(SEnvConfig envConfig) {
+    protected Object[][] provideConfiguredDriverNamesByEnv(SEnvConfig envConfig) {
         List<Object[]> driverNames = new ArrayList<Object[]>();
 
-        for (String configuredDriverName : envConfig.getDrivers()) {
-            driverNames.add(new Object[]{configuredDriverName});
+        for (String driverName : envConfig.getDrivers()) {
+            driverNames.add(new Object[]{ driverName });
         }
 
         return driverNames.toArray(new Object[driverNames.size()][]);
+    }
+
+    @DataProvider(name = "provideConfiguredEnvsAndDriverNames")
+    protected Object[][] provideConfiguredEnvsAndDriverNames() {
+        List<Object[]> result = new ArrayList<Object[]>();
+
+        for(SEnvConfig envConfig : SEnvConfigFactory.getInstance().getEnvConfigs().values()) {
+            for (String driverName : envConfig.getDrivers()) {
+                result.add(new Object[] { envConfig, driverName });
+            }
+        }
+
+        return result.toArray(new Object[result.size()][]);
     }
 
     /**

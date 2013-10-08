@@ -65,7 +65,7 @@ public class AllPagesAndDriversInProdEnvTest extends SBaseTest {
         return makeCartesianProvider(new Object[][] {
                 { SPageConfigFactory.getInstance().getPageConfig("detailspage") },
                 { SPageConfigFactory.getInstance().getPageConfig("playersolomode") }
-        }, provideDriverNamesByEnvConfig(envConfig));
+        }, provideConfiguredDriverNamesByEnv(envConfig));
     }
 
     @Test(dataProvider = "provideAllPagesByAllDriversInProdEnv")
