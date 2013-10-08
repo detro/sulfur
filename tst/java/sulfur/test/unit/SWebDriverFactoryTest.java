@@ -31,10 +31,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.*;
-import sulfur.factories.SConfig;
-import sulfur.factories.SPageConfigFactory;
-import sulfur.factories.SPageFactory;
+import sulfur.configs.SEnvConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SWebDriverFactory;
+import sulfur.utils.SDataProviderUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -47,11 +51,8 @@ public class SWebDriverFactoryTest {
 
     @BeforeClass
     public void initMandatorySystemProperties() {
-        SPageConfigFactory.clearInstance();
-        SPageFactory.clearInstance();
-        SWebDriverFactory.clearInstance();
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        SEnvConfigFactory.clearInstance();
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
     }
 
     @BeforeMethod
@@ -64,19 +65,34 @@ public class SWebDriverFactoryTest {
         mDriver.quit();
     }
 
-    @DataProvider(name = "driverNameAndClassProvider")
+    @DataProvider(name = "provideDriverNameAndClass")
     public Object[][] provideDriverNameAndClass() {
         return new Object[][] {
-                { "firefox", FirefoxDriver.class },
-                { "chrome", ChromeDriver.class }
+            { "firefox", FirefoxDriver.class },
+            { "chrome", ChromeDriver.class }
         };
     }
 
-    @Test(dataProvider = "driverNameAndClassProvider")
-    public void shouldCreateDriver(String driverName, Class driverClass) {
-        mDriver = SWebDriverFactory.getInstance().createDriver(driverName);
+    @DataProvider(name = "provideDriverFactories")
+    public Object[][] provideDriverFactories() {
+        List<Object[]> result = new ArrayList<Object[]>();
+
+        for (SEnvConfig envConfig : SEnvConfigFactory.getInstance().getEnvConfigs().values()) {
+            result.add(new Object[] { new SWebDriverFactory(envConfig) });
+        }
+
+        return result.toArray(new Object[result.size()][1]);
+    }
+
+    @DataProvider(name = "provideDriverNameDriverClassDriverFactory")
+    public Iterator<Object[]> provideDriverNameDriverClassDriverFactory() {
+        return SDataProviderUtils.cartesianProvider(provideDriverNameAndClass(), provideDriverFactories());
+    }
+
+    @Test(dataProvider = "provideDriverNameDriverClassDriverFactory")
+    public void shouldCreateDriver(String driverName, Class driverClass, SWebDriverFactory driverFactory) {
+        mDriver = driverFactory.createDriver(driverName);
         assertNotNull(mDriver);
         assertTrue(driverClass.isInstance(mDriver));
     }
-
 }

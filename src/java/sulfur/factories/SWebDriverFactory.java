@@ -36,6 +36,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import sulfur.configs.SEnvConfig;
 import sulfur.factories.exceptions.SInvalidConfigException;
 import sulfur.factories.exceptions.SInvalidDriverNameException;
 
@@ -44,7 +45,7 @@ import java.io.FileNotFoundException;
 /**
  * @author Ivan De Marino - detronizator@gmail.com
  *
- * TODO
+ * This class is in charge of instantiating WebDrivers, based on the given Sulfur Environment Configuration.
  */
 public class SWebDriverFactory {
     private static final Logger LOG = Logger.getLogger(SWebDriverFactory.class);
@@ -55,47 +56,31 @@ public class SWebDriverFactory {
     public static final String DRIVERNAME_PHANTOMJS = BrowserType.PHANTOMJS;
     public static final String DRIVERNAME_OPERA = BrowserType.OPERA;
 
-    private static SWebDriverFactory singleton = null;
-
-    private final SConfig mSulfurConfig;
-
-    private SWebDriverFactory(SConfig sulfurConfig) {
-        mSulfurConfig = sulfurConfig;
-    }
+    private final SEnvConfig mEnvConfig;
 
     /**
-     * Factory Method
+     * Constructor.
      *
-     * @return The SWebDriverFactory
+     * @param envConfig Sulfur Environment Configuration
      */
-    public synchronized static SWebDriverFactory getInstance() {
-        if (null == singleton) {
-            try {
-                singleton = new SWebDriverFactory(SConfig.getConfig());
-            } catch (FileNotFoundException fnfe) {
-                LOG.error("INVALID Config (not found)");
-                throw new SInvalidConfigException(fnfe.getMessage());
-            }
-        }
-
-        return singleton;
+    public SWebDriverFactory(SEnvConfig envConfig) {
+        mEnvConfig = envConfig;
     }
 
     /**
-     * Utility method to get rid of the SWebDriverFactory Singleton Instance.
-     * NOTE: Make sure you know what you are doing when using this.
+     * Create a WebDriver Instance.
+     *
+     * @param driverName Name of the driver interested in. Use this class static final strings.
+     * @return A WebDriver if all worked fine.
+     * @throws SInvalidDriverNameException
      */
-    public synchronized static void clearInstance() {
-        singleton = null;
-    }
-
     public WebDriver createDriver(String driverName) {
         LOG.debug("Creating Driver: " + driverName);
 
         // Either we ask a Selenium HUB for the Driver or we run it locally
-        if (null != mSulfurConfig.getSeleniumHub()) {
+        if (null != mEnvConfig.getSeleniumHub()) {
             LOG.debug(String.format("Driver will be requested to Selenium HUB at '%s'",
-                    mSulfurConfig.getSeleniumHub().toString()));
+                    mEnvConfig.getSeleniumHub().toString()));
 
             // Figure out which capability to use
             DesiredCapabilities caps;
@@ -120,7 +105,7 @@ public class SWebDriverFactory {
                     break;
             }
 
-            return new RemoteWebDriver(mSulfurConfig.getSeleniumHub(), caps);
+            return new RemoteWebDriver(mEnvConfig.getSeleniumHub(), caps);
         } else {
             // Figure out which browser to use
             switch(driverName) {
