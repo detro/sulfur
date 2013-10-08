@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
 import sulfur.configs.SEnvConfig;
+import sulfur.configs.SPageConfig;
 import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
 
@@ -46,7 +47,7 @@ import static org.testng.Assert.assertTrue;
 * @author Ivan De Marino
 */
 public class AllPagesAndDriversInProdEnvTest extends SBaseTest {
-    SEnvConfig envConfig;
+    private SEnvConfig envConfig;
 
     @BeforeClass
     public void setSystemProps() {
@@ -62,13 +63,13 @@ public class AllPagesAndDriversInProdEnvTest extends SBaseTest {
     @DataProvider(name = "provideAllPagesByAllDriversInProdEnv")
     public Iterator<Object[]> provideAllPagesByAllDriversInProdEnv() {
         return makeCartesianProvider(new Object[][] {
-                { "detailspage" },
-                { "playersolomode" }
+                { SPageConfigFactory.getInstance().getPageConfig("detailspage") },
+                { SPageConfigFactory.getInstance().getPageConfig("playersolomode") }
         }, provideDriverNamesByEnvConfig(envConfig));
     }
 
-    @Test(dataProvider = "allPagesByAllDrivers")
-    public void shouldLoadAllConfiguredPagesInAllConfiguredDrivers(String pageName, String driverName) {
+    @Test(dataProvider = "provideAllPagesByAllDriversInProdEnv")
+    public void shouldLoadAllConfiguredPagesInAllConfiguredDrivers(SPageConfig pageConfig, String driverName) {
         Map<String, String> pathParams = new HashMap<String, String>();
         pathParams.put("asin", "B00CV77WBU");
 
@@ -77,7 +78,7 @@ public class AllPagesAndDriversInProdEnvTest extends SBaseTest {
         queryParams.put("key2", "val2");
 
         // create the page
-        SPage p = new SPage(envConfig, driverName, SPageConfigFactory.getInstance().getPageConfig(pageName), pathParams, queryParams);
+        SPage p = new SPage(envConfig, driverName, pageConfig, pathParams, queryParams);
         // Make sure it's not "left hanging" after the test has finished
         disposeAfterTestMethod(p);
         // open the page
