@@ -40,7 +40,7 @@ project.ext {
     projectArtefactDir      = "jars/"
     projectCreator          = "Ivan De Marino (https://github.com/detro)"
 
-    seleniumVersion         = "2.33.0"
+    seleniumVersion         = "2.35.0"
     testngVersion           = "6.8.5"
     phantomjsdriverVersion  = "1.0.3"
     log4jVersion            = "1.2.17"
