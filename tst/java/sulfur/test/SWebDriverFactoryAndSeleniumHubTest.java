@@ -34,9 +34,9 @@ import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.testng.annotations.*;
 import sulfur.SBaseTest;
-import sulfur.factories.SConfig;
+import sulfur.configs.SEnvConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
-import sulfur.factories.SPageFactory;
 import sulfur.factories.SWebDriverFactory;
 
 import java.net.MalformedURLException;
@@ -47,30 +47,31 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 /**
- * @author Ivan De Marino
- */
+* @author Ivan De Marino
+*/
 public class SWebDriverFactoryAndSeleniumHubTest extends SBaseTest {
 
     private SeleniumServerRunner mSeleniumServer = null;
     private WebDriver mDriver;
 
     @BeforeClass
-    public void initMandatorySystemProperties() {
+    public void setSystemProps() {
         SPageConfigFactory.clearInstance();
-        SPageFactory.clearInstance();
-        SWebDriverFactory.clearInstance();
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        // The following Sulfur Config file is setup to expect a Selenium HUB running at "localhost:4444/wd/hub"
-        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex02.sulfur.config.json");
+        SEnvConfigFactory.clearInstance();
+
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_localseleniumgrid_configs");
     }
 
     @BeforeClass
     public void startSeleniumServer() {
+        SEnvConfig localSeleniumGridEnvConfig = (SEnvConfig)SEnvConfigFactory.getInstance().getEnvConfigs().values().toArray()[0];
+
         if (null == mSeleniumServer) {
             mSeleniumServer = new SeleniumServerRunner();
             mSeleniumServer.start();
             try {
-                new UrlChecker().waitUntilAvailable(20, TimeUnit.SECONDS, new URL(SPageFactory.getInstance().getConfig().getSeleniumHub().toString() + "/status"));
+                new UrlChecker().waitUntilAvailable(20, TimeUnit.SECONDS, new URL(localSeleniumGridEnvConfig.getSeleniumHub().toString() + "/status"));
             } catch (UrlChecker.TimeoutException e) {
                 e.printStackTrace();
             } catch (MalformedURLException e) {
@@ -96,9 +97,9 @@ public class SWebDriverFactoryAndSeleniumHubTest extends SBaseTest {
         mDriver.quit();
     }
 
-    @Test(dataProvider = "driverProvider")
-    public void shouldCreateDriver(String driverName) {
-        mDriver = SWebDriverFactory.getInstance().createDriver(driverName);
+    @Test(dataProvider = "provideConfiguredEnvsAndDriverNames")
+    public void shouldCreateDriver(SEnvConfig envConfig, String driverName) {
+        mDriver = new SWebDriverFactory(envConfig).createDriver(driverName);
         assertNotNull(mDriver);
         assertTrue(mDriver instanceof RemoteWebDriver);
     }
