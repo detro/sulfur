@@ -1,9 +1,0 @@
-{
-    "components"    : [
-        "non.existent.PageComponent"
-    ],
-    "path"          : "/totally/fake",
-    "queryParams"   : [
-        "param1"
-    ]
-}
