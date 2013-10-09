@@ -28,69 +28,75 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sulfur.test;
 
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
-import sulfur.factories.SConfig;
+import sulfur.configs.SEnvConfig;
+import sulfur.configs.SPageConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
-import sulfur.factories.SPageFactory;
 import sulfur.factories.exceptions.SMissingPathParamException;
 import sulfur.factories.exceptions.SMissingQueryParamException;
 import sulfur.factories.exceptions.SUnavailableDriverException;
-import sulfur.factories.exceptions.SUnavailablePageException;
 
 import java.util.HashMap;
 
 /**
- * Tests to check that Invalid Parameters, provided at SPage-creation time, cause the expected failure.
- *
- * @author Ivan De Marino
- */
+* Tests to check that Invalid Parameters, provided at SPage-creation time, cause the expected failure.
+*
+* @author Ivan De Marino
+*/
 public class InvalidParametersForPageCreationTest extends SBaseTest {
 
     @BeforeClass
     public void setSystemProps() {
-        SPageConfigFactory.clearInstance();
-        SPageFactory.clearInstance();
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = SMissingQueryParamException.class)
-    public void shouldFailIfMandatoryQueryParameterIsMissing(String driverName) {
-        SPage playerSoloMode = SPageFactory.getInstance().createPage(
+    @Test(dataProvider = "provideConfiguredEnvsAndDriverNames", expectedExceptions = SMissingQueryParamException.class)
+    public void shouldFailIfMandatoryQueryParameterIsMissing(SEnvConfig envConfig, String driverName) {
+        SPage playerSoloMode = createSelfDisposingPage(envConfig.getName(),
                 driverName,
                 "playersolomode",
-                new HashMap<String, String>(),
-                new HashMap<String, String>());
+                new HashMap<String, String>(),  //< no path parameters
+                new HashMap<String, String>()); //< no query parameters
         playerSoloMode.open();
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = SMissingPathParamException.class)
-    public void shouldFailIfMandatoryPathParameterIsMissing(String driverName) {
-        SPage playerSoloMode = SPageFactory.getInstance().createPage(
+    @Test(dataProvider = "provideConfiguredEnvsAndDriverNames", expectedExceptions = SMissingPathParamException.class)
+    public void shouldFailIfMandatoryPathParameterIsMissing(SEnvConfig envConfig, String driverName) {
+        SPage detailsPage = createSelfDisposingPage(envConfig.getName(),
                 driverName,
                 "detailspage",
-                new HashMap<String, String>(),
-                new HashMap<String, String>());
-        playerSoloMode.open();
+                new HashMap<String, String>(),  //< no path parameters
+                new HashMap<String, String>()); //< no query parameters
+        detailsPage.open();
     }
 
-    @Test(dataProvider = "pageProvider", expectedExceptions = SUnavailableDriverException.class)
-    public void shouldFailIfDriverNameIsInvalid(String pageName) {
-        SPage playerSoloMode = SPageFactory.getInstance().createPage(
+    @DataProvider(name = "provideCartesianEnvByPageConfigs")
+    public java.util.Iterator<Object[]> provideCartesianEnvByPageConfigs() {
+        return makeCartesianProvider(provideConfiguredEnvs(), provideConfiguredPages());
+    }
+
+    @Test(dataProvider = "provideCartesianEnvByPageConfigs", expectedExceptions = SUnavailableDriverException.class)
+    public void shouldFailIfDriverNameIsInvalid(SEnvConfig envConfig, SPageConfig pageConfig) {
+        SPage playerSoloMode = new SPage(
+                envConfig,
                 "madeUpDriver",
-                pageName,
+                pageConfig,
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
         playerSoloMode.open();
     }
 
-    @Test(dataProvider = "driverProvider", expectedExceptions = SUnavailablePageException.class)
-    public void shouldFailIfPageNameIsInvalid(String driverName) {
-        SPage playerSoloMode = SPageFactory.getInstance().createPage(
+    @Test(dataProvider = "provideConfiguredEnvsAndDriverNames", expectedExceptions = RuntimeException.class)
+    public void shouldFailIfPageNameIsInvalid(SEnvConfig envConfig, String driverName) {
+        SPage playerSoloMode = createSelfDisposingPage(
+                envConfig,
                 driverName,
-                "nonExistentPage",
+                SPageConfigFactory.getInstance().getPageConfig("nonExistentPage"),
                 new HashMap<String, String>(),
                 new HashMap<String, String>());
         playerSoloMode.open();
