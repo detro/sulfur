@@ -37,10 +37,7 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import sulfur.configs.SEnvConfig;
-import sulfur.factories.exceptions.SInvalidConfigException;
 import sulfur.factories.exceptions.SInvalidDriverNameException;
-
-import java.io.FileNotFoundException;
 
 /**
  * @author Ivan De Marino - detronizator@gmail.com
