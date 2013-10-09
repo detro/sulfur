@@ -24,6 +24,9 @@ public class PlayerPlaybackTest extends SBaseTest {
 
     @BeforeClass
     public void setSystemProps() {
+        SPageConfigFactory.clearInstance();
+        SEnvConfigFactory.clearInstance();
+
         System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
         System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
     }
