@@ -113,4 +113,9 @@ public class SEnvConfig {
         logger.debug("  driver: " + getDrivers());
         logger.debug("  seleniumhub: " + getSeleniumHub());
     }
+
+    @Override
+    public String toString() {
+        return String.format("Env '%s' ('%s')", getName(), getFilename());
+    }
 }

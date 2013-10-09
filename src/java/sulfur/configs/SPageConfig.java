@@ -232,4 +232,9 @@ public class SPageConfig {
 
         return resultQuery.toString();
     }
+
+    @Override
+    public String toString() {
+        return String.format("Env '%s' ('%s')", getName(), getFilename());
+    }
 }
