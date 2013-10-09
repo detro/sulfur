@@ -125,6 +125,14 @@ public class SPage {
                  SPageConfig pageConfig,
                  Map<String, String> pathParams,
                  Map<String, String> queryParams) {
+        // A bit of input validation
+        if (null == envConfig) {
+            throw new RuntimeException("Missing/NULL parameter 'envConfig'");
+        }
+        if (null == pageConfig) {
+            throw new RuntimeException("Missing/NULL parameter 'pageConfig'");
+        }
+
         // New Page, not yet "opened"
         mOpened = false;
 
@@ -150,14 +158,21 @@ public class SPage {
             throw new SFailedToCreatePageException(mue);
         }
 
-        // Create Page Components based on the configuration
-        mPageComponents = SPageComponentFactory.createPageComponentInstances(pageConfig.getComponentClassnames(), this);
-
         // Store the Page Configuration
         mPageConfig = pageConfig;
 
         // Create the requested driver
         mDriver = new SWebDriverFactory(envConfig).createDriver(driverName);
+
+        try {
+            // Create Page Components based on the configuration
+            mPageComponents = SPageComponentFactory.createPageComponentInstances(pageConfig.getComponentClassnames(), this);
+        } catch(Exception e) {
+            // Case something goes wrong, we must make sure the WebDriver is quit
+            LOG.fatal(String.format("FAILED to Create Components for the Page '%s'", pageConfig.getName()), e);
+            mDriver.quit();
+            throw e;
+        }
     }
 
     /**
