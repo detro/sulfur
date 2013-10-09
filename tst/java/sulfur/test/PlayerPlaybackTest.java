@@ -4,9 +4,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import sulfur.SBaseTest;
 import sulfur.SPage;
-import sulfur.factories.SConfig;
+import sulfur.configs.SEnvConfig;
+import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
-import sulfur.factories.SPageFactory;
 import sulfur.test.components.Player;
 import sulfur.test.components.PlayerSoloModeButtons;
 
@@ -24,23 +24,18 @@ public class PlayerPlaybackTest extends SBaseTest {
 
     @BeforeClass
     public void setSystemProps() {
-        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/ex01.sulfur.pageconfigs");
-        System.setProperty(SConfig.SYSPROP_CONFIG_FILE_PATH, "tst/ex01.sulfur.config.json");
+        System.setProperty(SPageConfigFactory.SYSPROP_PAGE_CONFIGS_DIR_PATH, "tst/test_page_configs");
+        System.setProperty(SEnvConfigFactory.SYSPROP_ENV_CONFIGS_DIR_PATH, "tst/test_env_configs");
     }
 
-//    @Test(dataProvider = "driverProvider", expectedExceptions = SUnavailableComponentException.class)
-    @Test(dataProvider = "driverProvider")
-    public void shouldLoadPlayerOnPlayerSoloModePage(String driverName) {
+    @Test(dataProvider = "provideConfiguredEnvsAndDriverNames")
+    public void shouldLoadPlayerOnPlayerSoloModePage(SEnvConfig envConfig, String driverName) {
         Map<String, String> queryParams = new HashMap<String, String>();
         queryParams.put("asin", "B00CV77WBU");
         queryParams.put("key2", "val2");
 
         // create the page
-        SPage p = SPageFactory.getInstance().createPage(driverName, "playersolomode", null, queryParams);
-        // make sure it's not "left hanging" after the test has finished
-        disposeAfterTestMethod(p);
-        // open the page
-        p.open();
+        SPage p = createOpenAndSelfDisposingPage(envConfig.getName(), driverName, "playersolomode", null, queryParams);
 
         // Wait 5 seconds for the Page to load
         p.waitForLoad(10, TimeUnit.SECONDS);
