@@ -78,7 +78,7 @@ abstract public class SBaseTest {
                                                    SPageConfig pageConfig,
                                                    Map<String, String> pathParams,
                                                    Map<String, String> queryParams) {
-        return disposeAfterTestMethod( new SPage(envConfig, driverName, pageConfig, pathParams, queryParams)).open();
+        return createSelfDisposingPage(envConfig, driverName, pageConfig, pathParams, queryParams).open();
     }
 
     /**
@@ -96,10 +96,44 @@ abstract public class SBaseTest {
                                                    String pageName,
                                                    Map<String, String> pathParams,
                                                    Map<String, String> queryParams) {
+        return createSelfDisposingPage(envName, driverName, pageName, pathParams, queryParams).open();
+    }
+
+    /**
+     * TODO Document
+     * @param envConfig
+     * @param driverName
+     * @param pageConfig
+     * @param pathParams
+     * @param queryParams
+     * @return
+     */
+    protected SPage createSelfDisposingPage(SEnvConfig envConfig,
+                                            String driverName,
+                                            SPageConfig pageConfig,
+                                            Map<String, String> pathParams,
+                                            Map<String, String> queryParams) {
+        return disposeAfterTestMethod(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
+    }
+
+    /**
+     * TODO Document
+     * @param envName
+     * @param driverName
+     * @param pageName
+     * @param pathParams
+     * @param queryParams
+     * @return
+     */
+    protected SPage createSelfDisposingPage(String envName,
+                                            String driverName,
+                                            String pageName,
+                                            Map<String, String> pathParams,
+                                            Map<String, String> queryParams) {
         SEnvConfig envConfig = SEnvConfigFactory.getInstance().getEnvConfig(envName);
         SPageConfig pageConfig = SPageConfigFactory.getInstance().getPageConfig(pageName);
 
-        return createOpenAndSelfDisposingPage(envConfig, driverName, pageConfig, pathParams, queryParams);
+        return disposeAfterTestMethod(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
     }
 
     /**
