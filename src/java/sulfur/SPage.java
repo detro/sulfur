@@ -87,7 +87,7 @@ public class SPage {
 
     private boolean mOpened;
 
-    private final WebDriver mDriver;
+    private WebDriver mDriver = null;
     private final String mInitialUrl;
     private final Map<String, SPageComponent> mPageComponents;
     private final SPageConfig mPageConfig;
@@ -115,18 +115,38 @@ public class SPage {
 
     /**
      * Construct a Page Object, already opened.
-     * This is used to when a Page interaction causes navigation to another page.
+     * This is used when a Page interaction causes navigation to another page.
      *
-     * NOTE: Calls to SPage#open() will have no effect.
+     * NOTE: Calls to {@link SPage#open()} will have no effect.
      *
      * @param driver WebDriver intance, initialised and with the page already loaded.
-     * @param config SPageConfig to use for this SPage
+     * @param config SPageConfig to use for this new SPage
      */
     public SPage(WebDriver driver, SPageConfig config) {
         mDriver = driver;
         mOpened = true;
         mInitialUrl = mDriver.getCurrentUrl();
         mPageConfig = config;
+        mPageComponents = createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
+    }
+
+    /**
+     * Construct a Page Object, using a pre-existing one as "blueprint".
+     * This is used when a Page interaction causes navigation to another page.
+     * The original page will become "stale", as it will be deprived of it's original driver, to pass it to
+     * the new page.
+     *
+     * NOTE: Calls to {@link SPage#open()} will have no effect.
+     *
+     * @param oldPage Page Object to start from
+     * @param newConfig SPageConfig to use for this new Page
+     */
+    public SPage(SPage oldPage, SPageConfig newConfig) {
+        mDriver = oldPage.getDriver();
+        oldPage.mDriver = null;         //< NOTE: Takes ownership of the Driver from the "old page"
+        mOpened = oldPage.isOpen();
+        mInitialUrl = mOpened ? oldPage.getCurrentUrl() : oldPage.getInitialUrl();
+        mPageConfig = newConfig;
         mPageComponents = createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
     }
 
@@ -229,10 +249,15 @@ public class SPage {
     /**
      * Disposes of a Page.
      * After this, the Page object and the internal Driver become unusable (i.e. WebDriver is quitted).
-     * I blame it on Java's lack of destructor.
+     *
+     * IMPORTANT: If multiple SPage objects use the same WebDriver (i.e. created using
+     * {@link sulfur.SPage(WebDriver, SPageConfig)}), quitting it will cause unpredictable failures.
      */
     public void dispose() {
-        mDriver.quit();
+        if (null != mDriver) {
+            mDriver.quit();
+            mDriver = null;
+        }
     }
 
     /**
