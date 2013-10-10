@@ -71,6 +71,7 @@ abstract public class SBaseTest {
      * @param pageConfig Page Configuration
      * @param pathParams Map of Path Parameters to use
      * @param queryParams Map of Query Parameters to use
+     *
      * @return Newly created SPage, already open and registered for self disposal
      */
     protected SPage createOpenAndSelfDisposingPage(SEnvConfig envConfig,
@@ -84,11 +85,12 @@ abstract public class SBaseTest {
     /**
      * See {@link SBaseTest#createOpenAndSelfDisposingPage(sulfur.configs.SEnvConfig, String, sulfur.configs.SPageConfig, java.util.Map, java.util.Map)}.
      *
-     * @param envName
-     * @param driverName
-     * @param pageName
-     * @param pathParams
-     * @param queryParams
+     * @param envName Sulfur Environment Configuration Name
+     * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
+     * @param pageName Page Configuration Name
+     * @param pathParams Map of Path Parameters to use
+     * @param queryParams Map of Query Parameters to use
+     *
      * @return Newly created SPage, already open and registered for self disposal
      */
     protected SPage createOpenAndSelfDisposingPage(String envName,
@@ -102,11 +104,12 @@ abstract public class SBaseTest {
     /**
      * Factory method to create an SPage that is already registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
      *
-     * @param envConfig
-     * @param driverName
-     * @param pageConfig
-     * @param pathParams
-     * @param queryParams
+     * @param envConfig Sulfur Environment Configuration
+     * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
+     * @param pageConfig Page Configuration
+     * @param pathParams Map of Path Parameters to use
+     * @param queryParams Map of Query Parameters to use
+     *
      * @return Newly created SPage, already registered for self disposal
      */
     protected SPage createSelfDisposingPage(SEnvConfig envConfig,
@@ -120,11 +123,12 @@ abstract public class SBaseTest {
     /**
      * See {@link SBaseTest#createSelfDisposingPage(sulfur.configs.SEnvConfig, String, sulfur.configs.SPageConfig, java.util.Map, java.util.Map)}.
      *
-     * @param envName
-     * @param driverName
-     * @param pageName
-     * @param pathParams
-     * @param queryParams
+     * @param envName Sulfur Environment Configuration Name
+     * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
+     * @param pageName Page Configuration Name
+     * @param pathParams Map of Path Parameters to use
+     * @param queryParams Map of Query Parameters to use
+     *
      * @return Newly created SPage, already registered for self disposal
      */
     protected SPage createSelfDisposingPage(String envName,
