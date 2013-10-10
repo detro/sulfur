@@ -48,7 +48,9 @@ import java.util.Map;
  * #factory
  * #singleton
  *
- * TODO
+ * Factory to scan and load SPage Config files.
+ * It's MANDATORY for this to work that {@link SPageConfigFactory#SYSPROP_PAGE_CONFIGS_DIR_PATH}
+ * has been set as System Property (i.e. <code>"... -Dsulfur.page.configs=..."</code>).
  */
 public class SPageConfigFactory {
     /** Logger */

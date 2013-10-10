@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * #page
  * #config
  *
- * TODO
+ * TODO Write documentation
  */
 public class SPageConfig {
     // JSON

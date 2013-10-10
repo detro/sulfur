@@ -100,7 +100,8 @@ abstract public class SBaseTest {
     }
 
     /**
-     * TODO Document
+     * Factory method to create an SPage that is already registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
+     *
      * @param envConfig
      * @param driverName
      * @param pageConfig
@@ -117,7 +118,8 @@ abstract public class SBaseTest {
     }
 
     /**
-     * TODO Document
+     * See {@link SBaseTest#createSelfDisposingPage(sulfur.configs.SEnvConfig, String, sulfur.configs.SPageConfig, java.util.Map, java.util.Map)}.
+     *
      * @param envName
      * @param driverName
      * @param pageName

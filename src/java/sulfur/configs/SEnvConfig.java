@@ -46,7 +46,7 @@ import java.util.Set;
  * #struct
  * #config
  *
- * TODO
+ * TODO Write documentation
  */
 public class SEnvConfig {
     // JSON

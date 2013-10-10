@@ -45,13 +45,11 @@ public class PlayerSoloModeButtons extends SPageComponent {
 
     @Override
     public boolean isLoaded() {
-        // TODO check for ALL the elements...
         return play.isDisplayed();
     }
 
     @Override
     public boolean isVisible() {
-        // TODO check for ALL the elements...
         return play.isDisplayed();
     }
 }

@@ -32,25 +32,48 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import sulfur.configs.SEnvConfig;
-import sulfur.factories.SPageComponentFactory;
 import sulfur.configs.SPageConfig;
 import sulfur.factories.SWebDriverFactory;
+import sulfur.factories.exceptions.SFailedToCreatePageComponentException;
 import sulfur.factories.exceptions.SFailedToCreatePageException;
 import sulfur.factories.exceptions.SUnavailableComponentException;
 import sulfur.factories.exceptions.SUnavailableDriverException;
 
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ivan De Marino
  *
- * TODO
+ * Sulfur Page.
+ * This class is the central "piece of the puzzle".
+ *
+ * Sulfur Pages are collection of Sulfur Components, and contain a basic set of methods
+ * to test the different parts of a page, looking at it as a composition of "widgets".
+ *
+ * The page contains also methods to control the loading flux of a page: to make sure HTML/JS has
+ * been fully loaded, the internal status of all the composing Components can be considered while
+ * "waiting for load".
+ *
+ * Also, the creation of a Page is based on the following input parameters:
+ * <ul>
+ *     <li>an Environment Configuration</li>
+ *     <li>a Page Configuration</li>
+ *     <li>a WebDriver name</li>
+ *     <li>a map of URL Path Parameters</li>
+ *     <li>a map of URL Query Parameters</li>
+ * </ul>
+ *
+ * Those together contribute to the setting up of the Page, letting the client code focus on the testing aspects,
+ * abstracting away "environmental parameters".
  */
 public class SPage {
     private static final Logger LOG = Logger.getLogger(SPage.class);
@@ -104,7 +127,7 @@ public class SPage {
         mOpened = true;
         mInitialUrl = mDriver.getCurrentUrl();
         mPageConfig = config;
-        mPageComponents = SPageComponentFactory.createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
+        mPageComponents = createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
     }
 
     /**
@@ -166,7 +189,7 @@ public class SPage {
 
         try {
             // Create Page Components based on the configuration
-            mPageComponents = SPageComponentFactory.createPageComponentInstances(pageConfig.getComponentClassnames(), this);
+            mPageComponents = createPageComponentInstances(pageConfig.getComponentClassnames(), this);
         } catch(Exception e) {
             // Case something goes wrong, we must make sure the WebDriver is quit
             LOG.fatal(String.format("FAILED to Create Components for the Page '%s'", pageConfig.getName()), e);
@@ -341,6 +364,52 @@ public class SPage {
      */
     public Map<String, SPageComponent> getComponents() {
         return mPageComponents;
+    }
+
+    /**
+     * Create a map of SPageComponents
+     *
+     * @param componentClassnames Classnames to use when creating a SPageComponent instance
+     * @param containingPage The SPage object that will contain those Components once created
+     */
+    private static Map<String, SPageComponent> createPageComponentInstances(String[] componentClassnames, SPage containingPage) {
+        Map<String, SPageComponent> pageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
+
+        for (String componentClassname : componentClassnames) {
+            SPageComponent newPageComponent = createPageComponentInstance(componentClassname, containingPage);
+            pageComponents.put(newPageComponent.getName(), newPageComponent);
+        }
+
+        return pageComponents;
+    }
+
+    /**
+     * Create instance of given SPageComponent.
+     *
+     * NOTE: This delegates the Selenium very own {@link org.openqa.selenium.support.PageFactory}
+     * to actually populate the WebElement declared in a SPageComponent.
+     *
+     * @param componentClassname Classname of the SPageComponent to create
+     * @param containingPage SPage that will contain the Component
+     * @return Instance of the SPageComponent
+     * @throws sulfur.factories.exceptions.SFailedToCreatePageComponentException
+     */
+     private static SPageComponent createPageComponentInstance(String componentClassname, SPage containingPage) {
+        try {
+            // Grab class and constructor
+            Class<?> componentClass = Class.forName(componentClassname);
+            Constructor<?> componentConstructor = componentClass.getConstructor(SPage.class);
+
+            // Create instance of the SPageComponent
+            SPageComponent componentObj = (SPageComponent) componentConstructor.newInstance(containingPage);
+
+            // Initialise the decorated WebElement in the Component, delegating the job to the Selenium {@link PageFactory}
+            PageFactory.initElements(containingPage.getDriver(), componentObj);
+
+            return componentObj;
+        } catch (Exception e) {
+            throw new SFailedToCreatePageComponentException(e);
+        }
     }
 
     /**
