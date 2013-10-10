@@ -38,7 +38,7 @@ import java.util.Set;
 public class SDataProviderUtils {
 
     /**
-     * Given a variable list of @DataProvider results, generate a cartesian product of available combinations.
+     * Given a variable list of DataProvider results, generate a cartesian product of available combinations.
      *
      * @param dataProviderData A vararg list of @DataProvider results
      * @return The cartesian product of available combinations.
@@ -48,7 +48,7 @@ public class SDataProviderUtils {
     }
 
     /**
-     * Given a list of @DataProvider results, generate a cartesian product of available combinations.
+     * Given a list of DataProvider results, generate a cartesian product of available combinations.
      *
      * @param dataProviderData A list of @DataProvider results
      * @return The cartesian product of available combinations.

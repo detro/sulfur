@@ -107,7 +107,7 @@ abstract public class SBaseTest {
      * @param pageConfig
      * @param pathParams
      * @param queryParams
-     * @return
+     * @return Newly created SPage, already registered for self disposal
      */
     protected SPage createSelfDisposingPage(SEnvConfig envConfig,
                                             String driverName,
@@ -125,7 +125,7 @@ abstract public class SBaseTest {
      * @param pageName
      * @param pathParams
      * @param queryParams
-     * @return
+     * @return Newly created SPage, already registered for self disposal
      */
     protected SPage createSelfDisposingPage(String envName,
                                             String driverName,
