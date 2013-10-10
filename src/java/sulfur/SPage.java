@@ -143,11 +143,12 @@ public class SPage {
      */
     public SPage(SPage oldPage, SPageConfig newConfig) {
         mDriver = oldPage.getDriver();
-        oldPage.mDriver = null;         //< NOTE: Takes ownership of the Driver from the "old page"
         mOpened = oldPage.isOpen();
-        mInitialUrl = mOpened ? oldPage.getCurrentUrl() : oldPage.getInitialUrl();
+        mInitialUrl = oldPage.getCurrentUrl();
         mPageConfig = newConfig;
         mPageComponents = createPageComponentInstances(mPageConfig.getComponentClassnames(), this);
+
+        oldPage.mDriver = null;         //< NOTE: Takes ownership of the Driver from the "old page"
     }
 
     /**
@@ -360,7 +361,7 @@ public class SPage {
      * @return URL the SPage's internal Driver is at.
      */
     public String getCurrentUrl() {
-        return getDriver().getCurrentUrl();
+        return isOpen() ? getDriver().getCurrentUrl() : getInitialUrl();
     }
 
     /**
