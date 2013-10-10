@@ -252,7 +252,7 @@ public class SPage {
      * After this, the Page object and the internal Driver become unusable (i.e. WebDriver is quitted).
      *
      * IMPORTANT: If multiple SPage objects use the same WebDriver (i.e. created using
-     * {@link sulfur.SPage(WebDriver, SPageConfig)}), quitting it will cause unpredictable failures.
+     * <code>SPage(WebDriver, SPageConfig)</code> constructor), quitting it will cause unpredictable failures.
      */
     public void dispose() {
         if (null != mDriver) {
