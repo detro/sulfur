@@ -80,7 +80,7 @@ public class AllPagesAndDriversInProdEnvTest extends SBaseTest {
         // create the page
         SPage p = new SPage(envConfig, driverName, pageConfig, pathParams, queryParams);
         // Make sure it's not "left hanging" after the test has finished
-        disposeAfterTestMethod(p);
+        disposeAfterClass(p);
         // open the page
         p.open();
         // validate the title

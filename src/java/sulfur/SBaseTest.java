@@ -27,43 +27,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur;
 
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.DataProvider;
 import sulfur.configs.SEnvConfig;
 import sulfur.configs.SPageConfig;
 import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
 import sulfur.utils.SDataProviderUtils;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.DataProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ivan De Marino
  */
 abstract public class SBaseTest {
 
-    private List<SPage> mPagesToDisposeAfterTest = new ArrayList<SPage>();
+    private List<SPage> mPagesToDisposeAfterClass = new ArrayList<SPage>();
 
     /**
      * Utility method to ensure, even on test failure, the SPage object is correctly closed (i.e. "driver.quit()" is invoked).
      *
-     * @see SBaseTest#disposePagesAfterTestMethod()
+     * @see SBaseTest#disposePagesAfterClass()
      * @param page SPage to dispose after the test.
      */
-    protected SPage disposeAfterTestMethod(SPage page) {
-        mPagesToDisposeAfterTest.add(page);
+    protected SPage disposeAfterClass(SPage page) {
+        mPagesToDisposeAfterClass.add(page);
         return page;
     }
 
-    @AfterMethod
-    protected void disposePagesAfterTestMethod() {
-        for (SPage p : mPagesToDisposeAfterTest) {
+    @AfterClass
+    protected void disposePagesAfterClass() {
+        for (SPage p : mPagesToDisposeAfterClass) {
             p.dispose();
         }
     }
 
     /**
-     * Factory method to create an SPage that is already .open() AND registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
+     * Factory method to create an SPage that is already .open() AND registered via {@link SBaseTest#disposeAfterClass(SPage)}.
      * Use this method when you know you don't need to set anything extra on the page before "opening" it.
      *
      * @param envConfig Sulfur Environment Configuration
@@ -102,7 +105,7 @@ abstract public class SBaseTest {
     }
 
     /**
-     * Factory method to create an SPage that is already registered via {@link SBaseTest#disposeAfterTestMethod(SPage)}.
+     * Factory method to create an SPage that is already registered via {@link SBaseTest#disposeAfterClass(SPage)}.
      *
      * @param envConfig Sulfur Environment Configuration
      * @param driverName Name of the WebDriver you want to use (see {@link sulfur.factories.SWebDriverFactory})
@@ -117,7 +120,7 @@ abstract public class SBaseTest {
                                             SPageConfig pageConfig,
                                             Map<String, String> pathParams,
                                             Map<String, String> queryParams) {
-        return disposeAfterTestMethod(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
+        return disposeAfterClass(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
     }
 
     /**
@@ -139,7 +142,7 @@ abstract public class SBaseTest {
         SEnvConfig envConfig = SEnvConfigFactory.getInstance().getEnvConfig(envName);
         SPageConfig pageConfig = SPageConfigFactory.getInstance().getPageConfig(pageName);
 
-        return disposeAfterTestMethod(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
+        return disposeAfterClass(new SPage(envConfig, driverName, pageConfig, pathParams, queryParams));
     }
 
     /**
