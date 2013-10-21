@@ -48,6 +48,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -270,13 +271,15 @@ public class SPage {
 
     /**
      * Returns "true" if the SPage has loaded, "false" otherwise.
-     * To check for loaded status, it queries all the SPageComponent inside: if all have loaded, the page has loaded.
+     * To check for loaded status, it queries all the MANDATORY SPageComponent inside: if all have loaded, the page has loaded.
      *
      * @return "true" if/when all SPageComponent inside the SPage have loaded.
      */
     public boolean hasLoaded() {
         for (Map.Entry<String, SPageComponent> component : mPageComponents.entrySet()) {
-            if (!component.getValue().isLoaded()) {
+            // IFF Component is Mandatory AND has not loaded yet, return false
+            if (mPageConfig.getMandatoryComponentClassnames().contains(component.getValue().getClass().getCanonicalName())
+                    && !component.getValue().isLoaded()) {
                 LOG.warn(String.format("SPageComponent '%s' in SPage '%s' has not loaded (yet?)",
                         component.getValue().getName(),
                         getName()));
@@ -398,8 +401,8 @@ public class SPage {
      * @param componentClassnames Classnames to use when creating a SPageComponent instance
      * @param containingPage The SPage object that will contain those Components once created
      */
-    private static Map<String, SPageComponent> createPageComponentInstances(String[] componentClassnames, SPage containingPage) {
-        Map<String, SPageComponent> pageComponents = new HashMap<String, SPageComponent>(componentClassnames.length);
+    private static Map<String, SPageComponent> createPageComponentInstances(Set<String> componentClassnames, SPage containingPage) {
+        Map<String, SPageComponent> pageComponents = new HashMap<String, SPageComponent>(componentClassnames.size());
 
         for (String componentClassname : componentClassnames) {
             SPageComponent newPageComponent = createPageComponentInstance(componentClassname, containingPage);

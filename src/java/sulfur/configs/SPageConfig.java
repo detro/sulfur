@@ -53,17 +53,19 @@ import java.util.regex.Pattern;
 public class SPageConfig {
     // JSON
     private String                  name = null;
-    private String[]                components = null;
+    private LinkedHashSet<String>   components = null;  //< "LinkedHashSet" ensure we get O(1) search and guaranteed order
     private String                  path = null;
-    private LinkedHashSet<String>   queryParams = null;
+    private LinkedHashSet<String>   queryParams = null; //< "LinkedHashSet" ensure we get O(1) search and guaranteed order
 
     // Derived
-    private transient String                    filename = null;
-    private transient LinkedHashSet<String>     pathParams = null;
-    private transient LinkedHashSet<String>     pathMandatoryParams = null; //< might seem redundant, but it's unlikely to be a long array
-    private transient LinkedHashSet<String>     queryMandatoryParams = null;
+    private transient String        filename = null;
+    private transient Set<String>   pathParams = null;
+    private transient Set<String>   pathMandatoryParams = null; //< might seem redundant, but it's unlikely to be a long array
+    private transient Set<String>   queryMandatoryParams = null;
+    private transient Set<String>   mandatoryComponents = null;
 
     // Patterns to extract Parameters from Path
+    private static final String PATTERN_MANDATORY_PREFIX = "!";
     private static final String PATTERN_FORMAT_PATH_PARAM = "\\{!?(%s)\\}";
     private static final String PATTERN_FORMAT_PATH_MANDATORY_PARAM = "\\{!(%s)\\}";
 
@@ -91,22 +93,45 @@ public class SPageConfig {
     }
 
     /**
-     * Initializes the list of Query Mandatory Parameters.
-     * This will take care of also removing the prefix "!" in front of the Mandatory parameters.
+     * Extracts a Set of Mandatory entries from an initial String Set.
+     * The Strings that are prefixed with PATTERN_MANDATORY_PREFIX (ex. "!"), are the ones considered Mandatory.
+     *
+     * NOTE: Mandatory strings are updated to remove the PATTERN_MANDATORY_PREFIX, in both the initial and result set.
+     *
+     * @param initial Initial String Set to do the extraction from
+     * @return String Set with the Mandatory strings
      */
-    private void initQueryMandatoryParams() {
-        // Fill the "queryMandatoryParams" Set
-        queryMandatoryParams = new LinkedHashSet<String>();
-        for (String queryParam : queryParams) {
-            if (queryParam.startsWith("!")) {
-                queryMandatoryParams.add(queryParam.replaceFirst("!", ""));
+    private static Set<String> extractMandatoryStringSet(Set<String> initial) {
+        // Fill the "mandatory" set
+        Set<String> mandatory = new LinkedHashSet<String>();
+        for (String iEntry : initial) {
+            if (iEntry.startsWith(PATTERN_MANDATORY_PREFIX)) {
+                mandatory.add(iEntry.replaceFirst(PATTERN_MANDATORY_PREFIX, ""));
             }
         }
 
-        // Replace mandatory params in "queryParams" with the same parameter minus the "!" prefix
-        for (String queryMandatoryParam : queryMandatoryParams) {
-            queryParams.remove("!" + queryMandatoryParam);
-            queryParams.add(queryMandatoryParam);
+        // Replace "mandatory" entries in the "initial" set with the same string minus the PATTERN_MANDATORY_PREFIX
+        for (String mEntry : mandatory) {
+            initial.remove(PATTERN_MANDATORY_PREFIX + mEntry);
+            initial.add(mEntry);
+        }
+
+        return mandatory;
+    }
+
+    /**
+     * Initializes the list of Query Mandatory Parameters.
+     * This will take care of also removing the prefix PATTERN_MANDATORY_PREFIX in front of the Mandatory parameters.
+     */
+    private void initQueryMandatoryParams() {
+        if (null == queryMandatoryParams) {
+            queryMandatoryParams = extractMandatoryStringSet(queryParams);
+        }
+    }
+
+    private void initMandatoryComponents() {
+        if (null == mandatoryComponents) {
+            mandatoryComponents = extractMandatoryStringSet(components);
         }
     }
 
@@ -114,8 +139,14 @@ public class SPageConfig {
         return null == name ? filename.replace(SPageConfigFactory.EXTENSION_PAGE_CONFIG_FILE, "") : name;
     }
 
-    public String[] getComponentClassnames() {
+    public Set<String> getComponentClassnames() {
+        initMandatoryComponents();
         return components;
+    }
+
+    public Set<String> getMandatoryComponentClassnames() {
+        initMandatoryComponents();
+        return mandatoryComponents;
     }
 
     public String getPath() {
@@ -131,16 +162,12 @@ public class SPageConfig {
     }
 
     public Set<String> getQueryParams() {
-        if (null == queryMandatoryParams) {
-            initQueryMandatoryParams();
-        }
+        initQueryMandatoryParams();
         return queryParams;
     }
 
     public Set<String> getQueryMandatoryParams() {
-        if (null == queryMandatoryParams) {
-            initQueryMandatoryParams();
-        }
+        initQueryMandatoryParams();
         return queryMandatoryParams;
     }
 
@@ -161,7 +188,8 @@ public class SPageConfig {
     public void logDebug(Logger logger) {
         logger.debug("  filename: " + getFilename());
         logger.debug("  name: " + getName());
-        logger.debug("  components: " + Arrays.toString(getComponentClassnames()));
+        logger.debug("  components: " + getComponentClassnames());
+        logger.debug("  mandatoryComponents: " + getMandatoryComponentClassnames());
         logger.debug("  path: " + getPath());
         logger.debug("  pathParams: " + getPathParams());
         logger.debug("  pathMandatoryParams: " + getPathMandatoryParams());
