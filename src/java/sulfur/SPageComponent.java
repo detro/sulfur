@@ -27,7 +27,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package sulfur;
 
+import com.google.common.base.Function;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ivan De Marino
@@ -37,6 +45,7 @@ import org.openqa.selenium.By;
  * But because of the abstract interface, it can even be something non-graphical like a JavaScript library/object.
  */
 public abstract class SPageComponent {
+    private static final Logger LOG = Logger.getLogger(SPageComponent.class);
 
     private final SPage mContainingPage;
 
@@ -49,6 +58,39 @@ public abstract class SPageComponent {
      */
     protected SPage getContainingPage() {
         return mContainingPage;
+    }
+
+    /**
+     * Utility method to check if an element is visible.
+     * It is designed to swallow and normalize exception that might happen if invoked
+     * against elements that are not even in the DOM (yet?).
+     *
+     * @param el WebElement we want to check the visibility of
+     * @return "true" if visible, "false" if not (or if it's not even in the DOM)
+     */
+    protected boolean isElementVisible(WebElement el) {
+        try {
+            return el.isDisplayed();
+        } catch (WebDriverException wde) {
+            return false;
+        }
+    }
+
+    /**
+     * Utility method to check if an element is loaded.
+     * It is designed to swallow and normalize exception that might happen if invoked
+     * against elements that are not even in the DOM (yet?).
+     *
+     * @param el WebElement we want to check the loading status of
+     * @return "true" if the element is loaded (i.e. "on the page"), "false" otherwise
+     */
+    protected boolean isElementLoaded(WebElement el) {
+        try {
+            el.getTagName();    //< do a basic interaction with the element to check if it's Loaded or not
+            return true;
+        } catch (WebDriverException wde) {
+            return false;
+        }
     }
 
     /**
@@ -87,5 +129,51 @@ public abstract class SPageComponent {
                     getContainingPage().getDriver().findElement(locator));  //< Find the Root WebElement by it's Locator
         }
         return "";
+    }
+
+    /**
+     * Refer to {@link SPageComponent#waitForLoad(long, java.util.concurrent.TimeUnit, long, java.util.concurrent.TimeUnit)}
+     * @param timeout Time before giving up
+     */
+    public void waitForLoad(long timeout) {
+        waitForLoad(timeout,
+                SPage.PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT,
+                SPage.PAGELOAD_WAIT_DEFAULT_POLLING_TIME,
+                SPage.PAGELOAD_WAIT_DEFAULT_POLLING_UNIT);
+    }
+
+    /**
+     * Refer to {@link SPageComponent#waitForLoad(long, java.util.concurrent.TimeUnit, long, java.util.concurrent.TimeUnit)}
+     * @param timeout Time before giving up
+     * @param unit Time Unit
+     */
+    public void waitForLoad(long timeout, TimeUnit unit) {
+        waitForLoad(timeout, unit,
+                SPage.PAGELOAD_WAIT_DEFAULT_POLLING_TIME,
+                SPage.PAGELOAD_WAIT_DEFAULT_POLLING_UNIT);
+    }
+
+    /**
+     * Wait for SPageComponent to Load.
+     * It will wait for {@link sulfur.SPageComponent#isLoaded()} to return "true".
+     *
+     * @param timeout Time before giving up the waiting
+     * @param timeoutUnit Time Unit used by timeout parameter
+     * @param polling Time interval between checking if SPage has loaded
+     * @param pollingUnit Time Unit used by polling parameter
+     */
+    public void waitForLoad(long timeout, TimeUnit timeoutUnit, long polling, TimeUnit pollingUnit) {
+        Wait<SPageComponent> waiter = new FluentWait<SPageComponent>(this)
+                .pollingEvery(polling, pollingUnit)
+                .withTimeout(timeout, timeoutUnit);
+
+        waiter.until(new Function<SPageComponent, Boolean>() {
+            public Boolean apply(SPageComponent pageComponent) {
+                LOG.debug(String.format("Waiting for SPageComponent '%s' in SPage '%s' to load",
+                        pageComponent.getName(),
+                        pageComponent.getContainingPage().getName()));
+                return pageComponent.isLoaded();
+            }
+        });
     }
 }

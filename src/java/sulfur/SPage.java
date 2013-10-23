@@ -79,12 +79,12 @@ import java.util.concurrent.TimeUnit;
 public class SPage {
     private static final Logger LOG = Logger.getLogger(SPage.class);
 
-    /** Default Polling time for SPage#waitForLoad */
-    private static final long PAGELOAD_WAIT_DEFAULT_POLLING_TIME        = 100;
-    /** Default Polling time unit for SPage#waitForLoad  */
-    private static final TimeUnit PAGELOAD_WAIT_DEFAULT_POLLING_UNIT    = TimeUnit.MILLISECONDS;
     /** Default Timout time unit for SPage#waitForLoad  */
-    private static final TimeUnit PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT    = TimeUnit.SECONDS;
+    public static final TimeUnit PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT     = TimeUnit.SECONDS;
+    /** Default Polling time for SPage#waitForLoad */
+    public static final long PAGELOAD_WAIT_DEFAULT_POLLING_TIME         = 100;
+    /** Default Polling time unit for SPage#waitForLoad  */
+    public static final TimeUnit PAGELOAD_WAIT_DEFAULT_POLLING_UNIT     = TimeUnit.MILLISECONDS;
 
     private boolean mOpened;
 
