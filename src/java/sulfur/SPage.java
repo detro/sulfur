@@ -275,7 +275,7 @@ public class SPage {
      *
      * @return "true" if/when all SPageComponent inside the SPage have loaded.
      */
-    public boolean hasLoaded() {
+    public boolean isLoaded() {
         for (Map.Entry<String, SPageComponent> component : mPageComponents.entrySet()) {
             // IFF Component is Mandatory AND has not loaded yet, return false
             if (mPageConfig.getMandatoryComponentClassnames().contains(component.getValue().getClass().getCanonicalName())
@@ -301,7 +301,7 @@ public class SPage {
         waitForLoad(timeout,
                 PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT,
                 PAGELOAD_WAIT_DEFAULT_POLLING_TIME,
-                PAGELOAD_WAIT_DEFAULT_TIMEOUT_UNIT);
+                PAGELOAD_WAIT_DEFAULT_POLLING_UNIT);
     }
 
     /**
@@ -332,7 +332,7 @@ public class SPage {
         waiter.until(new Function<SPage, Boolean>() {
             public Boolean apply(SPage page) {
                 LOG.debug(String.format("Waiting for SPage '%s' to load", getName()));
-                return page.hasLoaded();
+                return page.isLoaded();
             }
         });
     }
