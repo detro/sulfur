@@ -2,9 +2,6 @@ package sulfur.test.components;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.CacheLookup;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
 import sulfur.SPage;
 import sulfur.SPageComponent;
 
@@ -35,7 +32,7 @@ public class PlayerSoloModeButtons extends SPageComponent {
 
     @Override
     public String getName() {
-        return "PlayerSoloModeButtons";
+        return PlayerSoloModeButtons.class.getSimpleName();
     }
 
     @Override
@@ -45,11 +42,15 @@ public class PlayerSoloModeButtons extends SPageComponent {
 
     @Override
     public boolean isLoaded() {
-        return play.isDisplayed();
+        return isElementLoaded(play)
+                && isElementLoaded(pause)
+                && isElementLoaded(stop);
     }
 
     @Override
     public boolean isVisible() {
-        return play.isDisplayed();
+        return isElementVisible(play)
+                && isElementVisible(pause)
+                && isElementVisible(stop);
     }
 }

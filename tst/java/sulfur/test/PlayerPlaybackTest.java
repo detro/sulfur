@@ -7,6 +7,7 @@ import sulfur.SPage;
 import sulfur.configs.SEnvConfig;
 import sulfur.factories.SEnvConfigFactory;
 import sulfur.factories.SPageConfigFactory;
+import sulfur.test.components.BodyDummyComponent;
 import sulfur.test.components.Player;
 import sulfur.test.components.PlayerSoloModeButtons;
 
@@ -48,13 +49,22 @@ public class PlayerPlaybackTest extends SBaseTest {
         assertTrue(player.isVisible());
         assertFalse(player.isAlertsContainerVisible());
         assertFalse(player.isPlaybackContainerVisible());   //< NOTICE: Playback container not-visible initially
+        player.waitForLoad(10);
+        assertTrue(player.isLoaded());
 
         // grab PlayerSoloModeButtons component
         PlayerSoloModeButtons playerButtons = (PlayerSoloModeButtons) p.getComponent("PlayerSoloModeButtons");
         assertTrue(playerButtons.isVisible());
+        playerButtons.waitForLoad(10);
+        assertTrue(playerButtons.isLoaded());
 
         // Check that, clicking on the Show/Hide Toggle, the Player's Playback Container becomes visible
         playerButtons.toggleShowHide.click();
         assertTrue(player.isPlaybackContainerVisible());
+
+        BodyDummyComponent bodyDummyComponent = (BodyDummyComponent) p.getComponent("BodyDummyComponent");
+        bodyDummyComponent.waitForLoad(10);
+        assertTrue(bodyDummyComponent.isLoaded());
+        assertTrue(bodyDummyComponent.isVisible());
     }
 }

@@ -28,7 +28,7 @@ public class Player extends SPageComponent {
 
     @Override
     public String getName() {
-        return "Player";
+        return Player.class.getSimpleName();
     }
 
     @Override
@@ -38,9 +38,7 @@ public class Player extends SPageComponent {
 
     @Override
     public boolean isLoaded() {
-        // If "player_container_container" is on the page (even if not visible yet), the Player can be considered loaded
-        Object result = getContainingPage().executeScript("return document.getElementById(arguments[0]) !== null;", ROOT_ELEMENT_ID);
-        return result instanceof Boolean && ((Boolean)result).booleanValue();
+        return isElementLoaded(player_container_container);
     }
 
     @Override
