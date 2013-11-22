@@ -27,5 +27,5 @@ on your development environments" to "tests running as part of an automated CI".
 
 TO BE CONTINUED
 
-
+[more info about Sulfur (the element)](http://www.periodictable.com/Elements/016/index.html)
 
