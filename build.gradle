@@ -40,9 +40,9 @@ project.ext {
     projectArtefactDir      = "jars/"
     projectCreator          = "Ivan De Marino (https://github.com/detro)"
 
-    seleniumVersion         = "2.35.0"
+    seleniumVersion         = "2.39.0"
     testngVersion           = "6.8.5"
-    phantomjsdriverVersion  = "1.0.3"
+    phantomjsdriverVersion  = "1.1.0"
     log4jVersion            = "1.2.17"
     gsonVersion             = "2.2.4"
     guavaVersion            = "14.0.1"
@@ -197,6 +197,6 @@ task storeJavadoc(type: Sync, dependsOn: javadoc) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "1.6"
+    gradleVersion = "1.10"
     jarFile = "gradle/gradle-wrapper.jar"
 }
