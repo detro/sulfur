@@ -90,8 +90,7 @@ public class SEnvConfigFactoryTest {
     @DataProvider(name = "provideCurrentTestEnvConfigs")
     public Object[][] provideCurrentTestEnvConfigs() {
         return new Object[][] {
-                { "prod" },
-                { "pre-prod" }
+                { "prod" }
         };
     }
 
